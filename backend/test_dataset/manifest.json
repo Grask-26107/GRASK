@@ -1,0 +1,290 @@
+[
+  {
+    "file": "audit_01_water_conforming.jpg",
+    "category": "audit_compliance",
+    "expected_relevant": true,
+    "expected_verdict": "CONFORMING"
+  },
+  {
+    "file": "audit_02_water_toxic_lead.jpg",
+    "category": "audit_compliance",
+    "expected_relevant": true,
+    "expected_verdict": "NON_CONFORMING"
+  },
+  {
+    "file": "audit_03_steel_fe500d_pass.jpg",
+    "category": "audit_compliance",
+    "expected_relevant": true,
+    "expected_verdict": "CONFORMING"
+  },
+  {
+    "file": "audit_04_steel_low_strength_fail.jpg",
+    "category": "audit_compliance",
+    "expected_relevant": true,
+    "expected_verdict": "NON_CONFORMING"
+  },
+  {
+    "file": "audit_05_cement_53grade_pass.jpg",
+    "category": "audit_compliance",
+    "expected_relevant": true,
+    "expected_verdict": "CONFORMING"
+  },
+  {
+    "file": "audit_06_drinking_water_is10500.jpg",
+    "category": "audit_compliance",
+    "expected_relevant": true,
+    "expected_verdict": "CONFORMING"
+  },
+  {
+    "file": "audit_07_hdpe_pipe_is4984.jpg",
+    "category": "audit_compliance",
+    "expected_relevant": true,
+    "expected_verdict": "CONFORMING"
+  },
+  {
+    "file": "audit_08_helmet_is4151.jpg",
+    "category": "audit_compliance",
+    "expected_relevant": true,
+    "expected_verdict": "CONFORMING"
+  },
+  {
+    "file": "audit_09_structural_steel_is2062.jpg",
+    "category": "audit_compliance",
+    "expected_relevant": true,
+    "expected_verdict": "CONFORMING"
+  },
+  {
+    "file": "audit_10_plastic_migration_is9845.jpg",
+    "category": "audit_compliance",
+    "expected_relevant": true,
+    "expected_verdict": "CONFORMING"
+  },
+  {
+    "file": "audit_11_led_luminaire_is16102.jpg",
+    "category": "audit_compliance",
+    "expected_relevant": true,
+    "expected_verdict": "CONFORMING"
+  },
+  {
+    "file": "audit_12_faded_report.jpg",
+    "category": "audit_compliance",
+    "expected_relevant": true,
+    "expected_verdict": "CONFORMING"
+  },
+  {
+    "file": "nutri_01_biscuit_high_sugar.jpg",
+    "category": "nutri_score",
+    "expected_relevant": true,
+    "expected_verdict": "HARMFUL"
+  },
+  {
+    "file": "nutri_02_instant_noodles.jpg",
+    "category": "nutri_score",
+    "expected_relevant": true,
+    "expected_verdict": "HARMFUL"
+  },
+  {
+    "file": "nutri_03_peanut_butter_pure.jpg",
+    "category": "nutri_score",
+    "expected_relevant": true,
+    "expected_verdict": "SECURE"
+  },
+  {
+    "file": "nutri_04_fruit_beverage.jpg",
+    "category": "nutri_score",
+    "expected_relevant": true,
+    "expected_verdict": "HARMFUL"
+  },
+  {
+    "file": "nutri_05_potato_chips.jpg",
+    "category": "nutri_score",
+    "expected_relevant": true,
+    "expected_verdict": "HARMFUL"
+  },
+  {
+    "file": "nutri_06_whole_wheat_atta.jpg",
+    "category": "nutri_score",
+    "expected_relevant": true,
+    "expected_verdict": "SECURE"
+  },
+  {
+    "file": "nutri_07_energy_drink.jpg",
+    "category": "nutri_score",
+    "expected_relevant": true,
+    "expected_verdict": "HARMFUL"
+  },
+  {
+    "file": "nutri_08_dark_chocolate.jpg",
+    "category": "nutri_score",
+    "expected_relevant": true,
+    "expected_verdict": "CAUTION"
+  },
+  {
+    "file": "nutri_09_pasteurized_milk.jpg",
+    "category": "nutri_score",
+    "expected_relevant": true,
+    "expected_verdict": "SECURE"
+  },
+  {
+    "file": "nutri_10_infant_cereal.jpg",
+    "category": "nutri_score",
+    "expected_relevant": true,
+    "expected_verdict": "CAUTION"
+  },
+  {
+    "file": "nutri_11_corn_flakes.jpg",
+    "category": "nutri_score",
+    "expected_relevant": true,
+    "expected_verdict": "CAUTION"
+  },
+  {
+    "file": "nutri_12_tomato_ketchup.jpg",
+    "category": "nutri_score",
+    "expected_relevant": true,
+    "expected_verdict": "HARMFUL"
+  },
+  {
+    "file": "nutri_13_namkeen_snack.jpg",
+    "category": "nutri_score",
+    "expected_relevant": true,
+    "expected_verdict": "HARMFUL"
+  },
+  {
+    "file": "mark_01_bisleri_water_cml.jpg",
+    "category": "mark_check",
+    "expected_relevant": true,
+    "expected_valid": true
+  },
+  {
+    "file": "mark_02_tatatiscon_cml.jpg",
+    "category": "mark_check",
+    "expected_relevant": true,
+    "expected_valid": true
+  },
+  {
+    "file": "mark_03_ultratech_cement_cml.jpg",
+    "category": "mark_check",
+    "expected_relevant": true,
+    "expected_valid": true
+  },
+  {
+    "file": "mark_04_boat_earbuds_crs.jpg",
+    "category": "mark_check",
+    "expected_relevant": true,
+    "expected_valid": true
+  },
+  {
+    "file": "mark_05_dell_laptop_crs.jpg",
+    "category": "mark_check",
+    "expected_relevant": true,
+    "expected_valid": true
+  },
+  {
+    "file": "mark_06_samsung_phone_crs.jpg",
+    "category": "mark_check",
+    "expected_relevant": true,
+    "expected_valid": true
+  },
+  {
+    "file": "mark_07_gold_necklace_huid.jpg",
+    "category": "mark_check",
+    "expected_relevant": true,
+    "expected_valid": true
+  },
+  {
+    "file": "mark_08_gold_bangles_huid.jpg",
+    "category": "mark_check",
+    "expected_relevant": true,
+    "expected_valid": true
+  },
+  {
+    "file": "mark_09_gold_ring_huid.jpg",
+    "category": "mark_check",
+    "expected_relevant": true,
+    "expected_valid": true
+  },
+  {
+    "file": "mark_10_maggi_fssai.jpg",
+    "category": "mark_check",
+    "expected_relevant": true,
+    "expected_valid": true
+  },
+  {
+    "file": "mark_11_myfitness_fssai.jpg",
+    "category": "mark_check",
+    "expected_relevant": true,
+    "expected_valid": true
+  },
+  {
+    "file": "mark_12_dettol_barcode.jpg",
+    "category": "mark_check",
+    "expected_relevant": true,
+    "expected_valid": true
+  },
+  {
+    "file": "mark_13_fake_isi_no_cml.jpg",
+    "category": "mark_check",
+    "expected_relevant": true,
+    "expected_valid": false
+  },
+  {
+    "file": "irrel_01_sports_car.jpg",
+    "category": "irrelevant",
+    "expected_relevant": false
+  },
+  {
+    "file": "irrel_02_suv_vehicle.jpg",
+    "category": "irrelevant",
+    "expected_relevant": false
+  },
+  {
+    "file": "irrel_03_car_engine.jpg",
+    "category": "irrelevant",
+    "expected_relevant": false
+  },
+  {
+    "file": "irrel_04_motorcycle.jpg",
+    "category": "irrelevant",
+    "expected_relevant": false
+  },
+  {
+    "file": "irrel_05_pet_dog.jpg",
+    "category": "irrelevant",
+    "expected_relevant": false
+  },
+  {
+    "file": "irrel_06_pet_cat.jpg",
+    "category": "irrelevant",
+    "expected_relevant": false
+  },
+  {
+    "file": "irrel_07_mountain_landscape.jpg",
+    "category": "irrelevant",
+    "expected_relevant": false
+  },
+  {
+    "file": "irrel_08_flower_nature.jpg",
+    "category": "irrelevant",
+    "expected_relevant": false
+  },
+  {
+    "file": "irrel_09_human_portrait.jpg",
+    "category": "irrelevant",
+    "expected_relevant": false
+  },
+  {
+    "file": "irrel_10_coding_screen.jpg",
+    "category": "irrelevant",
+    "expected_relevant": false
+  },
+  {
+    "file": "irrel_11_blank_white.jpg",
+    "category": "irrelevant",
+    "expected_relevant": false
+  },
+  {
+    "file": "irrel_12_abstract_noise.jpg",
+    "category": "irrelevant",
+    "expected_relevant": false
+  }
+]

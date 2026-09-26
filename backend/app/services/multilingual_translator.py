@@ -338,7 +338,7 @@ class MultilingualTranslator:
         if settings.GEMINI_API_KEY:
             try:
                 import google.generativeai as genai
-                model = genai.GenerativeModel(model_name=settings.GEMINI_MODEL or "gemini-1.5-flash")
+                model = genai.GenerativeModel(model_name=settings.GEMINI_MODEL or "gemini-3.8-flash")
                 lang_meta = SUPPORTED_LANGUAGES.get(target_lang, {"name": target_lang, "native": target_lang})
                 prompt = (
                     f"Translate the following Bureau of Indian Standards (BIS) and food safety response "

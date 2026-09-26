@@ -165,6 +165,10 @@ class AuditReportExtractRequest(BaseModel):
 
 class ExtractedLabReportData(BaseModel):
     status: str = "SUCCESS"
+    is_relevant: bool = True
+    relevance_reason: Optional[str] = None
+    detected_subject: Optional[str] = None
+    corrected_text: Optional[str] = None
     standard_is_code: str
     product_name: str
     manufacturer_name: str
@@ -224,6 +228,10 @@ class LicenseVerifyRequest(BaseModel):
 class LicenseVerifyResponse(BaseModel):
     is_valid: bool
     status: str
+    is_relevant: bool = True
+    relevance_reason: Optional[str] = None
+    detected_subject: Optional[str] = None
+    corrected_text: Optional[str] = None
     mark_type: str
     identifier: str
     standard_code: str
@@ -264,6 +272,11 @@ class NutriAnalyzeRequest(BaseModel):
 
 
 class NutriAnalyzeResponse(BaseModel):
+    status: str = "SUCCESS"
+    is_relevant: bool = True
+    relevance_reason: Optional[str] = None
+    detected_subject: Optional[str] = None
+    corrected_text: Optional[str] = None
     product_name: str
     verdict: str
     verdict_badge: str

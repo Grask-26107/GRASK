@@ -1,0 +1,701 @@
+{
+  "total_checks": 77,
+  "passed_count": 77,
+  "failed_count": 0,
+  "pass_rate_percent": 100.0,
+  "results": [
+    {
+      "file": "audit_01_water_conforming.jpg",
+      "feature": "audit_compliance",
+      "category": "audit_compliance",
+      "passed": true,
+      "is_relevant": true,
+      "details": "7 params, OverallVerdict.NON_CONFORMING",
+      "latency": 2.36
+    },
+    {
+      "file": "audit_02_water_toxic_lead.jpg",
+      "feature": "audit_compliance",
+      "category": "audit_compliance",
+      "passed": true,
+      "is_relevant": true,
+      "details": "6 params, OverallVerdict.NON_CONFORMING",
+      "latency": 1.51
+    },
+    {
+      "file": "audit_03_steel_fe500d_pass.jpg",
+      "feature": "audit_compliance",
+      "category": "audit_compliance",
+      "passed": true,
+      "is_relevant": true,
+      "details": "5 params, OverallVerdict.NON_CONFORMING",
+      "latency": 1.67
+    },
+    {
+      "file": "audit_04_steel_low_strength_fail.jpg",
+      "feature": "audit_compliance",
+      "category": "audit_compliance",
+      "passed": true,
+      "is_relevant": true,
+      "details": "3 params, OverallVerdict.NON_CONFORMING",
+      "latency": 1.28
+    },
+    {
+      "file": "audit_05_cement_53grade_pass.jpg",
+      "feature": "audit_compliance",
+      "category": "audit_compliance",
+      "passed": true,
+      "is_relevant": true,
+      "details": "5 params, OverallVerdict.CONFORMING",
+      "latency": 1.41
+    },
+    {
+      "file": "audit_06_drinking_water_is10500.jpg",
+      "feature": "audit_compliance",
+      "category": "audit_compliance",
+      "passed": true,
+      "is_relevant": true,
+      "details": "9 params, OverallVerdict.CONFORMING",
+      "latency": 1.16
+    },
+    {
+      "file": "audit_07_hdpe_pipe_is4984.jpg",
+      "feature": "audit_compliance",
+      "category": "audit_compliance",
+      "passed": true,
+      "is_relevant": true,
+      "details": "4 params, OverallVerdict.NON_CONFORMING",
+      "latency": 1.16
+    },
+    {
+      "file": "audit_08_helmet_is4151.jpg",
+      "feature": "audit_compliance",
+      "category": "audit_compliance",
+      "passed": true,
+      "is_relevant": true,
+      "details": "1 params, OverallVerdict.CONFORMING",
+      "latency": 1.21
+    },
+    {
+      "file": "audit_09_structural_steel_is2062.jpg",
+      "feature": "audit_compliance",
+      "category": "audit_compliance",
+      "passed": true,
+      "is_relevant": true,
+      "details": "3 params, OverallVerdict.CONFORMING",
+      "latency": 0.97
+    },
+    {
+      "file": "audit_10_plastic_migration_is9845.jpg",
+      "feature": "audit_compliance",
+      "category": "audit_compliance",
+      "passed": true,
+      "is_relevant": true,
+      "details": "1 params, OverallVerdict.CONFORMING",
+      "latency": 1.28
+    },
+    {
+      "file": "audit_11_led_luminaire_is16102.jpg",
+      "feature": "audit_compliance",
+      "category": "audit_compliance",
+      "passed": true,
+      "is_relevant": true,
+      "details": "3 params, OverallVerdict.CONFORMING",
+      "latency": 1.08
+    },
+    {
+      "file": "audit_12_faded_report.jpg",
+      "feature": "audit_compliance",
+      "category": "audit_compliance",
+      "passed": true,
+      "is_relevant": true,
+      "details": "4 params, OverallVerdict.CONFORMING",
+      "latency": 0.96
+    },
+    {
+      "file": "nutri_01_biscuit_high_sugar.jpg",
+      "feature": "nutri_score",
+      "category": "nutri_score",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Verdict: HARMFUL, Grade: E",
+      "latency": 1.46
+    },
+    {
+      "file": "nutri_02_instant_noodles.jpg",
+      "feature": "nutri_score",
+      "category": "nutri_score",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Verdict: HARMFUL, Grade: D",
+      "latency": 1.08
+    },
+    {
+      "file": "nutri_03_peanut_butter_pure.jpg",
+      "feature": "nutri_score",
+      "category": "nutri_score",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Verdict: SECURE, Grade: C",
+      "latency": 0.99
+    },
+    {
+      "file": "nutri_04_fruit_beverage.jpg",
+      "feature": "nutri_score",
+      "category": "nutri_score",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Verdict: CAUTION, Grade: C",
+      "latency": 0.93
+    },
+    {
+      "file": "nutri_05_potato_chips.jpg",
+      "feature": "nutri_score",
+      "category": "nutri_score",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Verdict: HARMFUL, Grade: E",
+      "latency": 1.03
+    },
+    {
+      "file": "nutri_06_whole_wheat_atta.jpg",
+      "feature": "nutri_score",
+      "category": "nutri_score",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Verdict: SECURE, Grade: A",
+      "latency": 0.96
+    },
+    {
+      "file": "nutri_07_energy_drink.jpg",
+      "feature": "nutri_score",
+      "category": "nutri_score",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Verdict: CAUTION, Grade: D",
+      "latency": 0.92
+    },
+    {
+      "file": "nutri_08_dark_chocolate.jpg",
+      "feature": "nutri_score",
+      "category": "nutri_score",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Verdict: HARMFUL, Grade: D",
+      "latency": 0.94
+    },
+    {
+      "file": "nutri_09_pasteurized_milk.jpg",
+      "feature": "nutri_score",
+      "category": "nutri_score",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Verdict: SECURE, Grade: A",
+      "latency": 0.95
+    },
+    {
+      "file": "nutri_10_infant_cereal.jpg",
+      "feature": "nutri_score",
+      "category": "nutri_score",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Verdict: SECURE, Grade: B",
+      "latency": 0.92
+    },
+    {
+      "file": "nutri_11_corn_flakes.jpg",
+      "feature": "nutri_score",
+      "category": "nutri_score",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Verdict: CAUTION, Grade: C",
+      "latency": 1.26
+    },
+    {
+      "file": "nutri_12_tomato_ketchup.jpg",
+      "feature": "nutri_score",
+      "category": "nutri_score",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Verdict: HARMFUL, Grade: C",
+      "latency": 0.84
+    },
+    {
+      "file": "nutri_13_namkeen_snack.jpg",
+      "feature": "nutri_score",
+      "category": "nutri_score",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Verdict: CAUTION, Grade: D",
+      "latency": 0.95
+    },
+    {
+      "file": "mark_01_bisleri_water_cml.jpg",
+      "feature": "mark_check",
+      "category": "mark_check",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Primary: 8901030383728",
+      "latency": 2.43
+    },
+    {
+      "file": "mark_02_tatatiscon_cml.jpg",
+      "feature": "mark_check",
+      "category": "mark_check",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Primary: 5400234",
+      "latency": 2.11
+    },
+    {
+      "file": "mark_03_ultratech_cement_cml.jpg",
+      "feature": "mark_check",
+      "category": "mark_check",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Primary: 6200189",
+      "latency": 2.13
+    },
+    {
+      "file": "mark_04_boat_earbuds_crs.jpg",
+      "feature": "mark_check",
+      "category": "mark_check",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Primary: 8905650102321",
+      "latency": 2.19
+    },
+    {
+      "file": "mark_05_dell_laptop_crs.jpg",
+      "feature": "mark_check",
+      "category": "mark_check",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Primary: R-41001234",
+      "latency": 2.11
+    },
+    {
+      "file": "mark_06_samsung_phone_crs.jpg",
+      "feature": "mark_check",
+      "category": "mark_check",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Primary: R-41023456",
+      "latency": 1.97
+    },
+    {
+      "file": "mark_07_gold_necklace_huid.jpg",
+      "feature": "mark_check",
+      "category": "mark_check",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Primary: 22K916",
+      "latency": 2.45
+    },
+    {
+      "file": "mark_08_gold_bangles_huid.jpg",
+      "feature": "mark_check",
+      "category": "mark_check",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Primary: 18K750",
+      "latency": 2.01
+    },
+    {
+      "file": "mark_09_gold_ring_huid.jpg",
+      "feature": "mark_check",
+      "category": "mark_check",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Primary: 20K833",
+      "latency": 1.95
+    },
+    {
+      "file": "mark_10_maggi_fssai.jpg",
+      "feature": "mark_check",
+      "category": "mark_check",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Primary: 10012011000168",
+      "latency": 2.41
+    },
+    {
+      "file": "mark_11_myfitness_fssai.jpg",
+      "feature": "mark_check",
+      "category": "mark_check",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Primary: 1020021000488",
+      "latency": 2.57
+    },
+    {
+      "file": "mark_12_dettol_barcode.jpg",
+      "feature": "mark_check",
+      "category": "mark_check",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Primary: 8901396112203",
+      "latency": 2.22
+    },
+    {
+      "file": "mark_13_fake_isi_no_cml.jpg",
+      "feature": "mark_check",
+      "category": "mark_check",
+      "passed": true,
+      "is_relevant": true,
+      "details": "Primary: None",
+      "latency": 2.27
+    },
+    {
+      "file": "irrel_01_sports_car.jpg",
+      "feature": "audit_compliance",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (params=0)",
+      "latency": 0.69
+    },
+    {
+      "file": "irrel_01_sports_car.jpg",
+      "feature": "nutri_score",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (verdict=IRRELEVANT)",
+      "latency": 0.63
+    },
+    {
+      "file": "irrel_01_sports_car.jpg",
+      "feature": "mark_check",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (found=0)",
+      "latency": 1.06
+    },
+    {
+      "file": "irrel_02_suv_vehicle.jpg",
+      "feature": "audit_compliance",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (params=0)",
+      "latency": 0.77
+    },
+    {
+      "file": "irrel_02_suv_vehicle.jpg",
+      "feature": "nutri_score",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (verdict=IRRELEVANT)",
+      "latency": 0.78
+    },
+    {
+      "file": "irrel_02_suv_vehicle.jpg",
+      "feature": "mark_check",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (found=0)",
+      "latency": 1.15
+    },
+    {
+      "file": "irrel_03_car_engine.jpg",
+      "feature": "audit_compliance",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (params=0)",
+      "latency": 0.94
+    },
+    {
+      "file": "irrel_03_car_engine.jpg",
+      "feature": "nutri_score",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (verdict=IRRELEVANT)",
+      "latency": 1.09
+    },
+    {
+      "file": "irrel_03_car_engine.jpg",
+      "feature": "mark_check",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (found=0)",
+      "latency": 1.61
+    },
+    {
+      "file": "irrel_04_motorcycle.jpg",
+      "feature": "audit_compliance",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (params=0)",
+      "latency": 0.85
+    },
+    {
+      "file": "irrel_04_motorcycle.jpg",
+      "feature": "nutri_score",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (verdict=IRRELEVANT)",
+      "latency": 0.81
+    },
+    {
+      "file": "irrel_04_motorcycle.jpg",
+      "feature": "mark_check",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (found=0)",
+      "latency": 1.25
+    },
+    {
+      "file": "irrel_05_pet_dog.jpg",
+      "feature": "audit_compliance",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (params=0)",
+      "latency": 0.67
+    },
+    {
+      "file": "irrel_05_pet_dog.jpg",
+      "feature": "nutri_score",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (verdict=IRRELEVANT)",
+      "latency": 0.73
+    },
+    {
+      "file": "irrel_05_pet_dog.jpg",
+      "feature": "mark_check",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (found=0)",
+      "latency": 1.24
+    },
+    {
+      "file": "irrel_06_pet_cat.jpg",
+      "feature": "audit_compliance",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (params=0)",
+      "latency": 0.74
+    },
+    {
+      "file": "irrel_06_pet_cat.jpg",
+      "feature": "nutri_score",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (verdict=IRRELEVANT)",
+      "latency": 0.79
+    },
+    {
+      "file": "irrel_06_pet_cat.jpg",
+      "feature": "mark_check",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (found=0)",
+      "latency": 1.15
+    },
+    {
+      "file": "irrel_07_mountain_landscape.jpg",
+      "feature": "audit_compliance",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (params=0)",
+      "latency": 0.91
+    },
+    {
+      "file": "irrel_07_mountain_landscape.jpg",
+      "feature": "nutri_score",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (verdict=IRRELEVANT)",
+      "latency": 0.95
+    },
+    {
+      "file": "irrel_07_mountain_landscape.jpg",
+      "feature": "mark_check",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (found=0)",
+      "latency": 1.81
+    },
+    {
+      "file": "irrel_08_flower_nature.jpg",
+      "feature": "audit_compliance",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (params=0)",
+      "latency": 0.7
+    },
+    {
+      "file": "irrel_08_flower_nature.jpg",
+      "feature": "nutri_score",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (verdict=IRRELEVANT)",
+      "latency": 0.66
+    },
+    {
+      "file": "irrel_08_flower_nature.jpg",
+      "feature": "mark_check",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (found=0)",
+      "latency": 1.11
+    },
+    {
+      "file": "irrel_09_human_portrait.jpg",
+      "feature": "audit_compliance",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (params=0)",
+      "latency": 0.7
+    },
+    {
+      "file": "irrel_09_human_portrait.jpg",
+      "feature": "nutri_score",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (verdict=IRRELEVANT)",
+      "latency": 0.63
+    },
+    {
+      "file": "irrel_09_human_portrait.jpg",
+      "feature": "mark_check",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (found=0)",
+      "latency": 1.02
+    },
+    {
+      "file": "irrel_10_coding_screen.jpg",
+      "feature": "audit_compliance",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (params=0)",
+      "latency": 1.2
+    },
+    {
+      "file": "irrel_10_coding_screen.jpg",
+      "feature": "nutri_score",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (verdict=IRRELEVANT)",
+      "latency": 1.13
+    },
+    {
+      "file": "irrel_10_coding_screen.jpg",
+      "feature": "mark_check",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (found=0)",
+      "latency": 1.57
+    },
+    {
+      "file": "irrel_11_blank_white.jpg",
+      "feature": "audit_compliance",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (params=0)",
+      "latency": 0.5
+    },
+    {
+      "file": "irrel_11_blank_white.jpg",
+      "feature": "nutri_score",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (verdict=IRRELEVANT)",
+      "latency": 0.56
+    },
+    {
+      "file": "irrel_11_blank_white.jpg",
+      "feature": "mark_check",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (found=0)",
+      "latency": 0.78
+    },
+    {
+      "file": "irrel_12_abstract_noise.jpg",
+      "feature": "audit_compliance",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (params=0)",
+      "latency": 3.29
+    },
+    {
+      "file": "irrel_12_abstract_noise.jpg",
+      "feature": "nutri_score",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (verdict=IRRELEVANT)",
+      "latency": 3.26
+    },
+    {
+      "file": "irrel_12_abstract_noise.jpg",
+      "feature": "mark_check",
+      "category": "irrelevant",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Rejected (found=0)",
+      "latency": 3.9
+    },
+    {
+      "file": "nutri_01_biscuit_high_sugar.jpg",
+      "feature": "audit_compliance",
+      "category": "cross_domain",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Cross-domain rejection",
+      "latency": 1.25
+    },
+    {
+      "file": "audit_03_steel_fe500d_pass.jpg",
+      "feature": "nutri_score",
+      "category": "cross_domain",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Cross-domain rejection",
+      "latency": 1.53
+    },
+    {
+      "file": "mark_09_gold_ring_huid.jpg",
+      "feature": "nutri_score",
+      "category": "cross_domain",
+      "passed": true,
+      "is_relevant": false,
+      "details": "Cross-domain rejection",
+      "latency": 0.78
+    }
+  ]
+}

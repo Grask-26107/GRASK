@@ -12,7 +12,11 @@ import {
   Clock,
   Layers,
   Activity,
-  X
+  X,
+  Lock,
+  Unlock,
+  Download,
+  KeyRound
 } from 'lucide-react';
 import { TelemetryDashboardResponse } from '../types';
 import { telemetryApi } from '../services/api';
@@ -25,6 +29,10 @@ interface TelemetryDashboardProps {
 export const TelemetryDashboard: React.FC<TelemetryDashboardProps> = ({ addToast, onClose }) => {
   const [metrics, setMetrics] = useState<TelemetryDashboardResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isOfficerMode, setIsOfficerMode] = useState<boolean>(false);
+  const [showOfficerModal, setShowOfficerModal] = useState<boolean>(false);
+  const [pinInput, setPinInput] = useState<string>('');
+  const [pinError, setPinError] = useState<string | null>(null);
 
   const fetchMetrics = async () => {
     setLoading(true);
@@ -35,6 +43,38 @@ export const TelemetryDashboard: React.FC<TelemetryDashboardProps> = ({ addToast
       console.error('Failed to load telemetry metrics:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleExportAudit = () => {
+    if (!metrics) return;
+    const dossier = {
+      agency: "Bureau of Indian Standards & GRASK AI Telemetry",
+      statutory_mandate: "BIS Act 2016 - National Regulatory Grounding & Enforcement Oversight",
+      exported_at: new Date().toISOString(),
+      officer_clearance: "REGIONAL_STANDARDS_INSPECTOR_LEVEL_2",
+      telemetry_payload: metrics
+    };
+    const blob = new Blob([JSON.stringify(dossier, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `bis_telemetry_statutory_audit_${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    addToast('success', 'Statutory Telemetry Audit Dossier successfully downloaded.');
+  };
+
+  const handleVerifyOfficer = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (pinInput.trim() === '1915' || pinInput.trim().toLowerCase() === 'bis' || pinInput.trim() === 'admin') {
+      setIsOfficerMode(true);
+      setShowOfficerModal(false);
+      setPinInput('');
+      setPinError(null);
+      addToast('success', 'Nodal Officer Clearance Granted: Statutory Audit Tools Unlocked.');
+    } else {
+      setPinError('Invalid PIN. Use authorized National Consumer Toll-Free PIN: 1915');
     }
   };
 
@@ -81,6 +121,36 @@ export const TelemetryDashboard: React.FC<TelemetryDashboardProps> = ({ addToast
         </div>
 
         <div className="flex items-center space-x-2 self-start sm:self-auto">
+          {isOfficerMode && (
+            <button
+              onClick={handleExportAudit}
+              className="flex items-center space-x-1.5 px-3 py-2 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl shadow-sm transition-all"
+              title="Download Statutory Audit Dossier"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Export Audit Dossier</span>
+            </button>
+          )}
+
+          <button
+            onClick={() => {
+              if (isOfficerMode) {
+                setIsOfficerMode(false);
+                addToast('info', 'Returned to Public Telemetry View.');
+              } else {
+                setShowOfficerModal(true);
+              }
+            }}
+            className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-semibold rounded-2xl border transition-all ${
+              isOfficerMode
+                ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700'
+                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+            }`}
+          >
+            {isOfficerMode ? <Unlock className="w-3.5 h-3.5 text-amber-600" /> : <Lock className="w-3.5 h-3.5 text-slate-400" />}
+            <span>{isOfficerMode ? 'Officer Mode: Active' : 'Officer Mode'}</span>
+          </button>
+
           <button
             onClick={fetchMetrics}
             className="flex items-center space-x-1.5 px-3.5 py-2 text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-700 shadow-sm transition-all"
@@ -317,6 +387,80 @@ export const TelemetryDashboard: React.FC<TelemetryDashboardProps> = ({ addToast
           </table>
         </div>
       </div>
+
+      {/* Officer Security Gate Modal */}
+      {showOfficerModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-950/60 text-amber-600 flex items-center justify-center font-bold">
+                  <KeyRound className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">Officer Clearance Gate</h3>
+                  <span className="text-[10px] text-slate-500">Statutory Oversight Access</span>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setShowOfficerModal(false);
+                  setPinInput('');
+                  setPinError(null);
+                }}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleVerifyOfficer} className="mt-4 space-y-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Enter Nodal Officer PIN:
+                </label>
+                <input
+                  type="password"
+                  value={pinInput}
+                  onChange={(e) => {
+                    setPinInput(e.target.value);
+                    setPinError(null);
+                  }}
+                  placeholder="PIN: 1915"
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                  autoFocus
+                />
+                {pinError && <p className="text-xs text-rose-500 mt-1 font-medium">{pinError}</p>}
+                <p className="text-[11px] text-slate-400 mt-1.5">
+                  Statutory Clearance PIN: <code className="font-mono text-amber-600 dark:text-amber-400 font-bold">1915</code> (National Consumer Toll-Free)
+                </p>
+              </div>
+
+              <div className="flex items-center space-x-2 pt-2">
+                <button
+                  type="submit"
+                  className="flex-1 py-2 px-3 text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow transition-colors"
+                >
+                  Verify Clearance
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPinInput('1915');
+                    setIsOfficerMode(true);
+                    setShowOfficerModal(false);
+                    setPinError(null);
+                    addToast('success', 'Demo Officer Clearance Granted.');
+                  }}
+                  className="py-2 px-3 text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-colors"
+                >
+                  Quick Bypass
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

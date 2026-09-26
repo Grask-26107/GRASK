@@ -149,6 +149,8 @@ export const NutriScoreModal: React.FC<NutriScoreModalProps> = ({ isOpen, onClos
       ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
       const b64 = canvas.toDataURL('image/jpeg', 0.9);
       setImagePreview(b64);
+      setResult(null);
+      setInputText('');
       stopCamera();
       addToast('info', 'Scanning label photo with OCR...');
       runLocalOcr(b64);
@@ -168,6 +170,8 @@ export const NutriScoreModal: React.FC<NutriScoreModalProps> = ({ isOpen, onClos
     reader.onload = (event) => {
       const b64 = event.target?.result as string;
       setImagePreview(b64);
+      setResult(null);
+      setInputText('');
       addToast('info', 'Scanning uploaded label with OCR...');
       runLocalOcr(b64);
     };
@@ -204,7 +208,11 @@ export const NutriScoreModal: React.FC<NutriScoreModalProps> = ({ isOpen, onClos
       });
 
       setResult(res);
-      addToast('success', `Analysis complete! Verdict: ${res.verdict}`);
+      if (res.status === 'IRRELEVANT_DATA' || res.is_relevant === false) {
+        addToast('error', `Irrelevant Data: ${res.relevance_reason || 'Uploaded item is not a packaged food commodity.'}`);
+      } else {
+        addToast('success', `Analysis complete! Verdict: ${res.verdict}`);
+      }
     } catch (err: any) {
       addToast('error', err.response?.data?.detail || 'Failed to analyze nutrition profile.');
     } finally {
@@ -611,7 +619,39 @@ export const NutriScoreModal: React.FC<NutriScoreModalProps> = ({ isOpen, onClos
           </div>
 
           {/* Results Section */}
-          {result && (
+          {result && (result.status === 'IRRELEVANT_DATA' || result.is_relevant === false) && (
+            <div className="p-5 rounded-3xl border border-rose-300 dark:border-rose-900 bg-rose-50/95 dark:bg-rose-950/70 shadow-lg space-y-3 animate-in fade-in slide-in-from-bottom-2">
+              <div className="flex items-start space-x-3.5">
+                <span className="p-2.5 rounded-2xl bg-rose-100 dark:bg-rose-900/60 text-rose-600 dark:text-rose-300 shrink-0">
+                  <AlertTriangle className="w-6 h-6" />
+                </span>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-rose-600 text-white shadow-sm">
+                      IRRELEVANT DATA DETECTED
+                    </span>
+                    {result.detected_subject && (
+                      <span className="text-xs font-bold text-rose-800 dark:text-rose-200">
+                        Subject: {result.detected_subject}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-base font-extrabold text-rose-900 dark:text-rose-100 mt-2">
+                    {result.product_name || 'Non-Food Item Uploaded'}
+                  </h3>
+                  <p className="text-xs text-rose-800 dark:text-rose-200 mt-1 leading-relaxed">
+                    {result.relevance_reason || result.summary_verdict}
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-[11px] text-rose-700 dark:text-rose-300 bg-white/80 dark:bg-slate-900/70 p-3 rounded-2xl border border-rose-200 dark:border-rose-900/60 leading-relaxed">
+                <strong>Nutri-Score Guidelines:</strong> Please upload a photo of a packaged food label, nutritional information table, or ingredients list. Photos of vehicles, machinery, electronics, landscapes, or faces cannot be analyzed for nutritional safety.
+              </div>
+            </div>
+          )}
+
+          {result && result.status !== 'IRRELEVANT_DATA' && result.is_relevant !== false && (
             <div className="space-y-5 pt-4 border-t border-slate-200 dark:border-slate-800 animate-in fade-in slide-in-from-bottom-2 duration-300">
               {/* Definitive Verdict Banner */}
               {(() => {

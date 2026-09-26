@@ -21,6 +21,7 @@ from app.models.schemas import (
 )
 from app.services.compliance_audit import compliance_audit_engine, STANDARD_BENCHMARKS
 from app.services.pdf_report_generator import pdf_report_generator
+from app.services.domain_relevance_guard import domain_relevance_guard
 
 logger = logging.getLogger(__name__)
 
@@ -109,7 +110,7 @@ class LabReportExtractorService:
         try:
             import google.generativeai as genai
             genai.configure(api_key=settings.GEMINI_API_KEY)
-            model_name = settings.GEMINI_MODEL or "gemini-1.5-flash"
+            model_name = settings.GEMINI_MODEL or "gemini-3.8-flash"
             vision_model = genai.GenerativeModel(model_name)
 
             clean_b64 = image_base64
@@ -141,8 +142,11 @@ class LabReportExtractorService:
                 "Return ONLY raw JSON, without markdown formatting or backticks."
             )
 
-            response = vision_model.generate_content([prompt, pil_img])
-            raw_text = response.text.strip()
+            from app.core.gemini_manager import gemini_manager
+            raw_text, _ = gemini_manager.generate_with_fallback([prompt, pil_img])
+            if not raw_text:
+                return None
+            raw_text = raw_text.strip()
             # Remove ```json ... ``` wrapper if present
             if raw_text.startswith("```"):
                 raw_text = re.sub(r"^```(?:json)?\s*", "", raw_text)
@@ -305,16 +309,7 @@ class LabReportExtractorService:
                     ))
                     found_param_keys.add(norm_p)
 
-        # Fallback if no parameters detected at all: inject relevant sample parameters for the matched standard
-        if not parameters and matched_std:
-            for p_key, p_meta in list(matched_std["parameters"].items())[:5]:
-                parameters.append(AuditParameterInput(
-                    parameter_name=p_meta["name"],
-                    tested_value=str(p_meta["min"] if p_meta["min"] > 0 else (p_meta["max"] / 2.0 if p_meta["max"] < 9000 else 10.0)),
-                    unit=p_meta["unit"],
-                    notes="Benchmark standard nominal value"
-                ))
-
+        # Strict rule: Do not inject dummy parameters if no parameters were detected
         return {
             "standard_is_code": is_code,
             "product_name": product_name,
@@ -332,58 +327,100 @@ class LabReportExtractorService:
         auto_verify: bool = True
     ) -> ExtractedLabReportData:
         """
-        Coordinates Multimodal Vision + Local OCR text processing and optional
-        immediate automated statutory BIS compliance audit verification.
+        Coordinates Multimodal Vision + Local OCR text processing with strict
+        topic/relevance guard and automated BIS compliance audit verification.
         """
         extracted_data: Optional[Dict[str, Any]] = None
         method = "Local Rule-Based & Regex Parser"
+        detected_subject = "Lab Test Report"
+        corrected_text_summary = ""
 
-        # 1. Try Gemini Vision if image is present
+        # 1. Clean grammatical and spelling mistakes in raw text if present
+        text_to_parse = raw_text or ""
+        if text_to_parse.strip():
+            corr_result = domain_relevance_guard.clean_and_correct_text(text_to_parse, "audit_compliance")
+            text_to_parse = corr_result["corrected_text"]
+            corrected_text_summary = text_to_parse
+
+        # 2. If Image is provided, check multimodal subject & feature relevance FIRST
         if image_base64:
-            gemini_res = self._extract_with_gemini_vision(image_base64)
-            if gemini_res and gemini_res.get("parameters"):
-                extracted_data = gemini_res
-                method = "Gemini Multimodal Vision AI"
+            inspection = domain_relevance_guard.inspect_image_for_feature(
+                image_base64=image_base64,
+                feature="audit_compliance",
+                extra_text=text_to_parse
+            )
+            detected_subject = inspection.get("detected_subject", "Unknown Image")
 
-        # 2. If Gemini Vision didn't yield structured parameters, use heuristic parser on text
+            if not inspection.get("is_relevant", False):
+                logger.info(f"Audit compliance rejected image: {inspection.get('relevance_reason')}")
+                return ExtractedLabReportData(
+                    status="IRRELEVANT_DATA",
+                    is_relevant=False,
+                    relevance_reason=inspection.get("relevance_reason", "Uploaded image does not contain laboratory test report data."),
+                    detected_subject=detected_subject,
+                    corrected_text=corrected_text_summary,
+                    standard_is_code="",
+                    product_name="Irrelevant Media",
+                    manufacturer_name="Unrelated Content",
+                    batch_number="N/A",
+                    testing_lab="N/A",
+                    parameters=[],
+                    extracted_text=inspection.get("raw_text") or "Irrelevant image detected: No laboratory test parameters found.",
+                    confidence_score=0.98,
+                    extraction_method="Domain Relevance Guard",
+                    verification=None
+                )
+
+            # If image inspection already extracted valid parameters, use them
+            if inspection.get("extracted_data") and inspection["extracted_data"].get("parameters"):
+                extracted_data = inspection["extracted_data"]
+                method = "Gemini Multimodal Vision AI"
+            elif inspection.get("raw_text") and not text_to_parse:
+                text_to_parse = inspection["raw_text"]
+
+        # 3. If only text provided (no image), check text relevance to audit compliance
+        elif text_to_parse.strip():
+            is_rel, rel_reason, _ = domain_relevance_guard.check_text_relevance(text_to_parse, "audit_compliance")
+            if not is_rel:
+                logger.info(f"Audit compliance rejected text: {rel_reason}")
+                return ExtractedLabReportData(
+                    status="IRRELEVANT_DATA",
+                    is_relevant=False,
+                    relevance_reason=rel_reason,
+                    detected_subject="unrelated text",
+                    corrected_text=corrected_text_summary,
+                    standard_is_code="",
+                    product_name="Irrelevant Text",
+                    manufacturer_name="Unrelated Content",
+                    batch_number="N/A",
+                    testing_lab="N/A",
+                    parameters=[],
+                    extracted_text=text_to_parse,
+                    confidence_score=0.95,
+                    extraction_method="Domain Relevance Guard",
+                    verification=None
+                )
+
+        # 4. If structured data not already populated by vision, use heuristic parser on text
         if not extracted_data:
-            text_to_parse = raw_text or ""
-            # If no raw_text supplied but image is present, try server-side OCR
-            if not text_to_parse and image_base64:
-                try:
-                    import subprocess, tempfile, os
-                    clean_b64 = image_base64.split(",", 1)[1] if "," in image_base64 else image_base64
-                    img_bytes = base64.b64decode(clean_b64)
-                    with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as tf:
-                        tf.write(img_bytes)
-                        tmp_path = tf.name
-                    try:
-                        node_script = """
-                        const { createWorker } = require('./frontend/node_modules/tesseract.js');
-                        async function run() {
-                            const worker = await createWorker('eng');
-                            const res = await worker.recognize(process.argv[1]);
-                            process.stdout.write(res.data.text);
-                            await worker.terminate();
-                        }
-                        run();
-                        """
-                        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-                        ocr_proc = subprocess.run(
-                            ["node", "-e", node_script, tmp_path],
-                            capture_output=True, text=True, timeout=25, cwd=project_root
-                        )
-                        if ocr_proc.returncode == 0 and ocr_proc.stdout:
-                            text_to_parse = ocr_proc.stdout.strip()
-                            method = "Server Tesseract OCR + Heuristics"
-                    finally:
-                        if os.path.exists(tmp_path):
-                            try:
-                                os.remove(tmp_path)
-                            except Exception:
-                                pass
-                except Exception as e:
-                    logger.debug(f"Server-side fallback OCR error: {e}")
+            if not text_to_parse.strip() and not image_base64:
+                return ExtractedLabReportData(
+                    status="IRRELEVANT_DATA",
+                    is_relevant=False,
+                    relevance_reason="No laboratory report text or image was provided.",
+                    detected_subject="empty input",
+                    corrected_text="",
+                    standard_is_code="",
+                    product_name="",
+                    manufacturer_name="",
+                    batch_number="",
+                    testing_lab="",
+                    parameters=[],
+                    extracted_text="",
+                    confidence_score=1.0,
+                    extraction_method="None",
+                    verification=None
+                )
 
             extracted_data = self._extract_with_heuristics_and_regex(text_to_parse)
 
@@ -405,14 +442,35 @@ class LabReportExtractorService:
             elif isinstance(p, AuditParameterInput):
                 param_objects.append(p)
 
-        std_code = extracted_data.get("standard_is_code", "IS 14543")
-        prod_name = extracted_data.get("product_name", "Laboratory Test Sample")
-        mfg_name = extracted_data.get("manufacturer_name", "Audited Manufacturer")
-        batch_no = extracted_data.get("batch_number", "BATCH-LAB-01")
-        test_lab = extracted_data.get("testing_lab", "NABL Accredited Testing Laboratory")
-        summary_text = extracted_data.get("extracted_text_summary") or raw_text or "Laboratory report processed successfully."
+        # If zero parameters could be extracted, do NOT falsely pass or auto-verify
+        if not param_objects:
+            logger.info("Audit compliance extractor found 0 valid parameters in input.")
+            return ExtractedLabReportData(
+                status="IRRELEVANT_DATA",
+                is_relevant=False,
+                relevance_reason="Irrelevant Data Detected: No laboratory test parameters or test values could be parsed from the provided input.",
+                detected_subject=detected_subject,
+                corrected_text=corrected_text_summary,
+                standard_is_code=extracted_data.get("standard_is_code") or "",
+                product_name=extracted_data.get("product_name") or "Unverified Product",
+                manufacturer_name=extracted_data.get("manufacturer_name") or "N/A",
+                batch_number=extracted_data.get("batch_number") or "N/A",
+                testing_lab=extracted_data.get("testing_lab") or "N/A",
+                parameters=[],
+                extracted_text=extracted_data.get("extracted_text_summary") or text_to_parse,
+                confidence_score=0.90,
+                extraction_method=method,
+                verification=None
+            )
 
-        # 3. Automated Verification if requested
+        std_code = str(extracted_data.get("standard_is_code") or "IS 14543")
+        prod_name = str(extracted_data.get("product_name") or "Laboratory Test Sample")
+        mfg_name = str(extracted_data.get("manufacturer_name") or "Audited Manufacturer")
+        batch_no = str(extracted_data.get("batch_number") or "BATCH-LAB-01")
+        test_lab = str(extracted_data.get("testing_lab") or "NABL Accredited Testing Laboratory")
+        summary_text = str(extracted_data.get("extracted_text_summary") or text_to_parse or "Laboratory report processed successfully.")
+
+        # 5. Automated Verification if requested
         verification_response: Optional[AuditResponse] = None
         if auto_verify and param_objects:
             try:
@@ -433,6 +491,10 @@ class LabReportExtractorService:
 
         return ExtractedLabReportData(
             status="SUCCESS",
+            is_relevant=True,
+            relevance_reason="Relevant laboratory test certificate verified.",
+            detected_subject=detected_subject,
+            corrected_text=corrected_text_summary,
             standard_is_code=std_code,
             product_name=prod_name,
             manufacturer_name=mfg_name,
@@ -444,6 +506,8 @@ class LabReportExtractorService:
             extraction_method=method,
             verification=verification_response
         )
+
+    extract_lab_report = extract_and_verify
 
 
 lab_report_extractor_service = LabReportExtractorService()

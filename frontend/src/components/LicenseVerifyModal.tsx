@@ -267,6 +267,10 @@ export const LicenseVerifyModal: React.FC<LicenseVerifyModalProps> = ({
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     const base64Data = canvas.toDataURL('image/jpeg', 0.95);
     setImagePreview(base64Data);
+    setResult(null);
+    setIdentifier('');
+    setDetectedList([]);
+    setHybridSummary(null);
     stopCamera();
 
     addToast('info', 'Frame captured! Starting neural OCR extraction...');
@@ -894,6 +898,35 @@ export const LicenseVerifyModal: React.FC<LicenseVerifyModalProps> = ({
       // -------------------------------------------------------------
       try {
         const backendExtract = await standardsApi.extractOcrIdentifiers(fullText, optimizedSrc);
+        if (backendExtract.status === 'IRRELEVANT_DATA' || backendExtract.is_relevant === false) {
+          setDetectedList([]);
+          setIdentifier('');
+          setHybridSummary(null);
+          setResult({
+            is_valid: false,
+            status: 'IRRELEVANT_DATA',
+            is_relevant: false,
+            relevance_reason: backendExtract.relevance_reason || 'Uploaded image does not appear to contain BIS or FSSAI statutory marks.',
+            detected_subject: backendExtract.detected_subject || 'Non-domain Image',
+            mark_type: 'Irrelevant Data Detected',
+            identifier: 'N/A',
+            standard_code: 'None',
+            product_name: 'No Certification Mark Detected',
+            manufacturer: 'N/A',
+            operating_unit: 'N/A',
+            valid_until: 'N/A',
+            details: { reason: backendExtract.relevance_reason, detected_subject: backendExtract.detected_subject },
+            guidelines: [
+              'Irrelevant media detected. The uploaded photo does not contain a BIS ISI Mark, CM/L number, FSSAI license, Gold Hallmark HUID, CRS R-Number, or GS1 barcode.',
+              'Please capture or upload a clear photo of product packaging or certification mark.'
+            ],
+            bis_care_instructions: 'Point camera directly at the ISI mark or FSSAI number on the product package.',
+            grievance_redressal: 'Enter a valid license number manually or scan packaging.'
+          });
+          addToast('error', `Irrelevant Data Detected: ${backendExtract.relevance_reason || 'Not a valid certification mark.'}`);
+          return;
+        }
+
         if (backendExtract.extracted_identifiers && backendExtract.extracted_identifiers.length > 0) {
           for (const item of backendExtract.extracted_identifiers) {
             if (!matches.some((m) => m.value === item.value)) {
@@ -940,6 +973,10 @@ export const LicenseVerifyModal: React.FC<LicenseVerifyModalProps> = ({
     reader.onloadend = () => {
       const base64String = reader.result as string;
       setImagePreview(base64String);
+      setResult(null);
+      setIdentifier('');
+      setDetectedList([]);
+      setHybridSummary(null);
       stopCamera();
       addToast('info', 'Image uploaded! Initiating neural OCR scanner...');
       runNeuralOcr(base64String);
@@ -962,7 +999,9 @@ export const LicenseVerifyModal: React.FC<LicenseVerifyModalProps> = ({
         imagePreview || undefined
       );
       setResult(data);
-      if (data.is_valid) {
+      if (data.status === 'IRRELEVANT_DATA' || data.is_relevant === false) {
+        addToast('error', `Irrelevant Query: ${data.relevance_reason || 'Provided input is not a statutory certification mark.'}`);
+      } else if (data.is_valid) {
         addToast('success', `Verified: ${data.mark_type}`);
       } else {
         addToast('error', 'Non-conforming mark or unverified identifier detected.');
@@ -985,6 +1024,18 @@ export const LicenseVerifyModal: React.FC<LicenseVerifyModalProps> = ({
     setIdentifier(item.value);
     setQueryType(item.type);
     handleVerify(item.value, item.type);
+  };
+
+  const handleResetScanner = () => {
+    stopCamera();
+    setIdentifier('');
+    setResult(null);
+    setImagePreview(null);
+    setHybridSummary(null);
+    setIsOcrScanning(false);
+    setOcrProgress(0);
+    setOcrStatus('');
+    addToast('info', 'Scanner reset. Enter or scan another mark.');
   };
 
   if (!isOpen) return null;
@@ -1015,15 +1066,28 @@ export const LicenseVerifyModal: React.FC<LicenseVerifyModalProps> = ({
               </p>
             </div>
           </div>
-          <button
-            onClick={() => {
-              stopCamera();
-              onClose();
-            }}
-            className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center space-x-2">
+            {(result || imagePreview || identifier) && (
+              <button
+                type="button"
+                onClick={handleResetScanner}
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/50 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800 transition-all shadow-xs"
+                title="Reset scanner and verify another mark"
+              >
+                <RefreshCw className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                <span>Reset Scanner</span>
+              </button>
+            )}
+            <button
+              onClick={() => {
+                stopCamera();
+                onClose();
+              }}
+              className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Modal Body */}
@@ -1336,7 +1400,39 @@ export const LicenseVerifyModal: React.FC<LicenseVerifyModalProps> = ({
           </div>
 
           {/* Verification Results Panel */}
-          {result && (
+          {result && (result.status === 'IRRELEVANT_DATA' || result.is_relevant === false) && (
+            <div className="rounded-2xl p-5 border border-rose-300 dark:border-rose-900 bg-rose-50/95 dark:bg-rose-950/70 shadow-lg space-y-3 animate-in fade-in">
+              <div className="flex items-start space-x-3.5">
+                <span className="p-2.5 rounded-2xl bg-rose-100 dark:bg-rose-900/60 text-rose-600 dark:text-rose-300 shrink-0">
+                  <AlertTriangle className="w-6 h-6" />
+                </span>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-rose-600 text-white shadow-sm">
+                      IRRELEVANT DATA DETECTED
+                    </span>
+                    {result.detected_subject && (
+                      <span className="text-xs font-bold text-rose-800 dark:text-rose-200">
+                        Subject: {result.detected_subject}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-base font-extrabold text-rose-900 dark:text-rose-100 mt-2">
+                    {result.product_name || 'No Certification Mark Detected'}
+                  </h3>
+                  <p className="text-xs text-rose-800 dark:text-rose-200 mt-1 leading-relaxed">
+                    {result.relevance_reason || 'The provided image or query does not relate to Indian Standards or statutory marks.'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-[11px] text-rose-700 dark:text-rose-300 bg-white/80 dark:bg-slate-900/70 p-3 rounded-2xl border border-rose-200 dark:border-rose-900/60 leading-relaxed">
+                <strong>MANAK-Vision Mark Verification Requirement:</strong> Please upload or capture an image of genuine product packaging bearing a BIS ISI Mark, CM/L number, 14-digit FSSAI license, Gold Hallmark HUID, CRS R-Number, or GS1 barcode. Photos of automobiles, machinery, scenery, animals, or non-certified goods cannot be verified.
+              </div>
+            </div>
+          )}
+
+          {result && result.status !== 'IRRELEVANT_DATA' && result.is_relevant !== false && (
             <div
               className={`rounded-2xl p-5 border transition-all ${
                 result.is_valid

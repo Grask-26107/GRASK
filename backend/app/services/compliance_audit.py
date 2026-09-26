@@ -373,6 +373,132 @@ STANDARD_BENCHMARKS = {
                 "test_method": "IS 4032"
             }
         }
+    },
+    "IS 4151": {
+        "title": "Protective Helmets for Two-Wheeler Riders",
+        "year": "2015",
+        "parameters": {
+            "impact_attenuation": {
+                "name": "Peak Impact Attenuation Acceleration",
+                "min": 0,
+                "max": 300.0,
+                "unit": "g",
+                "clause": "Clause 9.2 (Table 2 - Impact)",
+                "critical": True,
+                "test_method": "IS 4151 Annex A"
+            },
+            "retention_dynamic": {
+                "name": "Retention System Dynamic Extension",
+                "min": 0,
+                "max": 25.0,
+                "unit": "mm",
+                "clause": "Clause 9.3 (Retention System)",
+                "critical": True,
+                "test_method": "IS 4151 Annex B"
+            },
+            "retention_residual": {
+                "name": "Retention System Residual Extension",
+                "min": 0,
+                "max": 15.0,
+                "unit": "mm",
+                "clause": "Clause 9.3.2 (Residual Extension)",
+                "critical": False,
+                "test_method": "IS 4151 Annex B"
+            },
+            "rigidity_deformation": {
+                "name": "Lateral Rigidity Max Deformation",
+                "min": 0,
+                "max": 40.0,
+                "unit": "mm",
+                "clause": "Clause 9.4 (Rigidity Test)",
+                "critical": True,
+                "test_method": "IS 4151 Annex C"
+            }
+        }
+    },
+    "IS 16102": {
+        "title": "Self-Ballasted LED Lamps for General Lighting Services",
+        "year": "2012",
+        "parameters": {
+            "luminous_efficacy": {
+                "name": "Luminous Efficacy",
+                "min": 80.0,
+                "max": 9999.0,
+                "unit": "lm/W",
+                "clause": "Clause 8.1 (Efficacy Benchmark)",
+                "critical": True,
+                "test_method": "IS 16102 (Part 2)"
+            },
+            "power_factor": {
+                "name": "Power Factor",
+                "min": 0.90,
+                "max": 1.0,
+                "unit": "",
+                "clause": "Clause 7.2 (Electrical Characteristics)",
+                "critical": True,
+                "test_method": "IS 16102 (Part 1)"
+            },
+            "harmonics_thd": {
+                "name": "Total Harmonic Distortion (THD)",
+                "min": 0,
+                "max": 30.0,
+                "unit": "%",
+                "clause": "Clause 7.4 (Harmonic Currents)",
+                "critical": False,
+                "test_method": "IS 16102 (Part 1)"
+            },
+            "insulation_resistance": {
+                "name": "Insulation Resistance",
+                "min": 2.0,
+                "max": 9999.0,
+                "unit": "MOhm",
+                "clause": "Clause 9.1 (Safety - Dielectric)",
+                "critical": True,
+                "test_method": "IS 16102 (Part 1)"
+            }
+        }
+    },
+    "IS 1417": {
+        "title": "Gold & Gold Alloys, Jewellery/Artefacts - Fineness & Hallmarking",
+        "year": "2016",
+        "parameters": {
+            "gold_fineness_22k": {
+                "name": "22 Karat Gold Fineness",
+                "min": 916.0,
+                "max": 1000.0,
+                "unit": "ppt",
+                "clause": "Clause 4.1 (Table 1 - Grades)",
+                "critical": True,
+                "test_method": "IS 1418 (Fire Assay Method)"
+            },
+            "gold_fineness_18k": {
+                "name": "18 Karat Gold Fineness",
+                "min": 750.0,
+                "max": 1000.0,
+                "unit": "ppt",
+                "clause": "Clause 4.1 (Table 1 - Grades)",
+                "critical": True,
+                "test_method": "IS 1418 (Fire Assay Method)"
+            },
+            "toxic_cadmium": {
+                "name": "Cadmium Toxicity in Soldering",
+                "min": 0,
+                "max": 200.0,
+                "unit": "ppm",
+                "clause": "Clause 5.2 (Prohibited Solder Elements)",
+                "critical": True,
+                "test_method": "IS 1417 Annex C"
+            },
+            "toxic_lead": {
+                "name": "Lead Content Restriction",
+                "min": 0,
+                "max": 200.0,
+                "unit": "ppm",
+                "clause": "Clause 5.2 (Hazardous Metals)",
+                "critical": True,
+                "test_method": "IS 1417 Annex C"
+            }
+        }
     }
 }
 

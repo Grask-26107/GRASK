@@ -13,6 +13,7 @@ from app.api.standards import router as standards_router
 from app.api.audit import router as audit_router
 from app.api.feedback import router as feedback_router
 from app.api.telemetry import router as telemetry_router
+from app.api.certificates import router as certificates_router
 
 # Configure logging
 logging.basicConfig(
@@ -74,6 +75,7 @@ app.include_router(standards_router, prefix=settings.API_V1_STR)
 app.include_router(audit_router, prefix=settings.API_V1_STR)
 app.include_router(feedback_router, prefix=settings.API_V1_STR)
 app.include_router(telemetry_router, prefix=settings.API_V1_STR)
+app.include_router(certificates_router, prefix=settings.API_V1_STR)
 
 
 @app.get("/", tags=["Root"])
@@ -88,10 +90,23 @@ def root():
 
 
 @app.get("/health", tags=["Health"])
-def health_check():
+def health_check(refresh: bool = False):
+    from app.core.gemini_manager import gemini_manager
+    gemini_health = gemini_manager.check_health(force_refresh=refresh)
     return {
-        "status": "healthy",
+        "status": "healthy" if gemini_health.get("is_healthy", False) else "degraded",
+        "gemini_online": gemini_health.get("gemini_online", False),
+        "active_model": gemini_health.get("active_model", settings.GEMINI_MODEL),
+        "available_models": gemini_health.get("available_models", []),
+        "latency_ms": gemini_health.get("latency_ms", 0),
+        "message": gemini_health.get("message", "Operational"),
         "gemini_configured": bool(settings.GEMINI_API_KEY),
         "chroma_storage": settings.CHROMA_PERSIST_DIR,
         "environment": settings.ENVIRONMENT
     }
+
+
+@app.get("/api/v1/health/gemini", tags=["Health"])
+def gemini_health_status(refresh: bool = False):
+    from app.core.gemini_manager import gemini_manager
+    return gemini_manager.check_health(force_refresh=refresh)

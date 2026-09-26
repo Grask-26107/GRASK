@@ -137,6 +137,10 @@ export interface AuditReportExtractRequest {
 
 export interface ExtractedLabReportData {
   status: string;
+  is_relevant?: boolean;
+  relevance_reason?: string;
+  detected_subject?: string;
+  corrected_text?: string;
   standard_is_code: string;
   product_name: string;
   manufacturer_name: string;
@@ -188,6 +192,10 @@ export interface TelemetryDashboardResponse {
 export interface LicenseVerifyResponse {
   is_valid: boolean;
   status: string;
+  is_relevant?: boolean;
+  relevance_reason?: string;
+  detected_subject?: string;
+  corrected_text?: string;
   mark_type: string;
   identifier: string;
   standard_code: string;
@@ -305,6 +313,11 @@ export type NutriPersona = 'general' | 'diabetic' | 'gluten_free' | 'infant' | '
 
 export interface NutriAnalyzeResult {
   product_name: string;
+  status?: string;
+  is_relevant?: boolean;
+  relevance_reason?: string;
+  detected_subject?: string;
+  corrected_text?: string;
   verdict: 'HARMFUL' | 'CAUTION' | 'SECURE' | string;
   verdict_badge: string;
   nutri_score_grade: 'A' | 'B' | 'C' | 'D' | 'E' | string;

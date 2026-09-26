@@ -1,0 +1,15 @@
+HTTP/1.1 422 Unprocessable Content
+date: Tue, 22 Sep 2026 07:00:25 GMT
+server: uvicorn
+content-length: 82
+content-type: application/json
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-xss-protection: 1; mode=block
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
+content-security-policy: default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;
+x-grask-shield: Active-v2.0-MilitaryGrade
+
+{"detail":[{"type":"missing","loc":["body"],"msg":"Field required","input":null}]}

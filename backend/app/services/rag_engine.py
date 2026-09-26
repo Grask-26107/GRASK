@@ -3917,7 +3917,7 @@ class RAGEngine:
         if is_connected and GENAI_AVAILABLE and settings.GEMINI_API_KEY:
             try:
                 model = genai.GenerativeModel(
-                    model_name=settings.GEMINI_MODEL or "gemini-1.5-flash",
+                    model_name=settings.GEMINI_MODEL or "gemini-3.8-flash",
                     system_instruction=system_prompt
                 )
                 

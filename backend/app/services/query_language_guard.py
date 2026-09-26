@@ -75,6 +75,12 @@ OUT_OF_SCOPE_NEGATIVE_PATTERNS = [
     # Finance / Banking (not trade/MSME)
     r'\b(stock\s*market|share\s*market|mutual\s*fund|demat|crypto\s*currency|bitcoin|forex)\b',
     r'\b(home\s*loan|personal\s*loan|credit\s*card\s*bill|emi\s*calculation|insurance\s*claim)\b',
+    # Fictional / Sci-Fi / Extraterrestrial / Non-existent Technology
+    r'\b(mars\b|moon\b|jupiter|saturn|alien|aliens|extraterrestrial|flying\s*cars?|time\s*machine|time\s*travel|teleportation|anti\s*gravity|perpetual\s*motion|laser\s*sword|lightsaber|magic\s*wand|death\s*ray|invisibility\s*cloak)\b',
+    # Automotive / Vehicles / Mechanics (unrelated to statutory standards compliance)
+    r'\b(car\s*photos?|car\s*pics?|car\s*images?|pictures?\s*of\s*cars?|photo\s*of\s*car|sedan|suv|hatchback|sports\s*car)\b',
+    r'\b(toyota\s*corolla|honda\s*civic|maruti\s*suzuki\s*swift|hyundai\s*i20|tata\s*nexon|mahindra\s*thar)\b',
+    r'\b(car\s*engine|car\s*mileage|car\s*battery\s*life|car\s*service\s*center|car\s*mechanic|used\s*cars?|buy\s*a\s*car|sell\s*my\s*car)\b',
 ]
 
 # ---------------------------------------------------------------------------
@@ -234,8 +240,14 @@ class QueryLanguageGuard:
           while keeping the same language.
         - On any error, returns original text unchanged.
         """
-        if detected_lang is None:
-            # Already English or unknown — no fix needed
+        if detected_lang is None or detected_lang == "en":
+            try:
+                from app.services.domain_relevance_guard import domain_relevance_guard
+                clean_res = domain_relevance_guard.clean_and_correct_text(text, feature="chat_standards")
+                if clean_res.get("corrected_text"):
+                    return clean_res["corrected_text"]
+            except Exception as e:
+                logger.debug(f"English grammar correction fallback: {e}")
             return text
 
         try:
@@ -243,7 +255,7 @@ class QueryLanguageGuard:
             if not settings.GEMINI_API_KEY:
                 return text
             genai.configure(api_key=settings.GEMINI_API_KEY)
-            model = genai.GenerativeModel('gemini-1.5-flash-latest')
+            model = genai.GenerativeModel(getattr(settings, 'GEMINI_MODEL', 'gemini-3.8-flash'))
             prompt = (
                 "Fix spelling, grammar and arrange this sentence properly. "
                 "Keep it in the SAME language. "
@@ -350,7 +362,7 @@ class QueryLanguageGuard:
             if not settings.GEMINI_API_KEY:
                 return None
             genai.configure(api_key=settings.GEMINI_API_KEY)
-            model = genai.GenerativeModel("gemini-1.5-flash-latest")
+            model = genai.GenerativeModel(getattr(settings, 'GEMINI_MODEL', 'gemini-3.8-flash'))
             prompt = (
                 f"Translate the following text to English. "
                 f"Return ONLY the English translation, nothing else.\n\nText: {text}"
@@ -439,7 +451,7 @@ class QueryLanguageGuard:
                 return True, 0.5  # Default allow if API unavailable
 
             genai.configure(api_key=settings.GEMINI_API_KEY)
-            model = genai.GenerativeModel("gemini-1.5-flash-latest")
+            model = genai.GenerativeModel(getattr(settings, 'GEMINI_MODEL', 'gemini-3.8-flash'))
             prompt = (
                 "You are a strict domain classifier for a Bureau of Indian Standards (BIS) assistant.\n"
                 "The assistant ONLY handles: BIS Indian Standards (IS codes), FSSAI food safety, "

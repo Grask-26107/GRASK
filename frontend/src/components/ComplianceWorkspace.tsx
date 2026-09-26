@@ -309,6 +309,7 @@ export const ComplianceWorkspace: React.FC<ComplianceWorkspaceProps> = ({ addToa
   const [showRawText, setShowRawText] = useState<boolean>(false);
   const [extractionMethod, setExtractionMethod] = useState<string>('');
   const [confidenceScore, setConfidenceScore] = useState<number | null>(null);
+  const [irrelevantAlert, setIrrelevantAlert] = useState<{ reason: string; subject?: string } | null>(null);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
@@ -396,6 +397,17 @@ export const ComplianceWorkspace: React.FC<ComplianceWorkspaceProps> = ({ addToa
     setOcrStatus('Optical Scanner initializing for lab report...');
     setCapturedImage(imageBase64);
 
+    // Reset previous audit state & parameters upfront to prevent stale data bleed
+    setAuditResult(null);
+    setIrrelevantAlert(null);
+    setParameters([]);
+    setStandardCode('');
+    setProductName('');
+    setManufacturerName('');
+    setBatchNumber('');
+    setTestingLab('');
+    setRawExtractedText('');
+
     try {
       let ocrText = existingText || '';
 
@@ -427,6 +439,27 @@ export const ComplianceWorkspace: React.FC<ComplianceWorkspaceProps> = ({ addToa
         auto_verify: autoVerifyOnExtract
       });
 
+      // Check for Irrelevant Data Guard
+      if (extractResult.status === 'IRRELEVANT_DATA' || extractResult.is_relevant === false) {
+        setOcrProgress(100);
+        setOcrStatus('Inspection finished: Irrelevant data detected.');
+        setAuditResult(null);
+        setParameters([]);
+        setStandardCode('');
+        setProductName('');
+        setManufacturerName('');
+        setBatchNumber('');
+        setTestingLab('');
+        setRawExtractedText(extractResult.extracted_text || ocrText || '');
+        setIrrelevantAlert({
+          reason: extractResult.relevance_reason || 'Uploaded image does not appear to be a laboratory test report or quality certificate.',
+          subject: extractResult.detected_subject || 'Non-domain Subject'
+        });
+        addToast('error', `Irrelevant Data Detected: ${extractResult.relevance_reason || 'Not a valid lab report.'}`);
+        return;
+      }
+
+      setIrrelevantAlert(null);
       setOcrProgress(100);
       setOcrStatus('Lab report parsed successfully!');
 
@@ -493,9 +526,39 @@ export const ComplianceWorkspace: React.FC<ComplianceWorkspaceProps> = ({ addToa
       setIsExtracting(true);
       setOcrProgress(30);
       setOcrStatus('Uploading PDF laboratory report to parser...');
+      // Clear previous states upfront
+      setAuditResult(null);
+      setIrrelevantAlert(null);
+      setParameters([]);
+      setStandardCode('');
+      setProductName('');
+      setManufacturerName('');
+      setBatchNumber('');
+      setTestingLab('');
+      setRawExtractedText('');
+
       try {
         const result = await auditApi.uploadLabReportFile(file, autoVerifyOnExtract);
         setOcrProgress(100);
+
+        if (result.status === 'IRRELEVANT_DATA' || result.is_relevant === false) {
+          setAuditResult(null);
+          setParameters([]);
+          setStandardCode('');
+          setProductName('');
+          setManufacturerName('');
+          setBatchNumber('');
+          setTestingLab('');
+          setRawExtractedText(result.extracted_text || '');
+          setIrrelevantAlert({
+            reason: result.relevance_reason || 'PDF document is not a laboratory test certificate.',
+            subject: result.detected_subject || 'Non-domain Document'
+          });
+          addToast('error', `Irrelevant Data: ${result.relevance_reason || 'Uploaded PDF is not a valid lab report.'}`);
+          return;
+        }
+
+        setIrrelevantAlert(null);
         if (result.standard_is_code) setStandardCode(result.standard_is_code);
         if (result.product_name) setProductName(result.product_name);
         if (result.manufacturer_name) setManufacturerName(result.manufacturer_name);
@@ -678,6 +741,25 @@ export const ComplianceWorkspace: React.FC<ComplianceWorkspaceProps> = ({ addToa
     },
   };
 
+  const handleResetAudit = () => {
+    stopCamera();
+    setAuditResult(null);
+    setCapturedImage(null);
+    setIrrelevantAlert(null);
+    setRawExtractedText('');
+    setExtractionMethod('');
+    setConfidenceScore(null);
+    setSelectedTemplateId('');
+    setStandardCode('');
+    setProductName('');
+    setManufacturerName('');
+    setBatchNumber('');
+    setTestingLab('');
+    setParameters([]);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+    addToast('info', 'Audit Workspace reset. Ready for a new laboratory test audit.');
+  };
+
   return (
     <div className="space-y-6 max-w-6xl mx-auto px-1 sm:px-2">
       {/* 3D Workspace Header */}
@@ -722,6 +804,18 @@ export const ComplianceWorkspace: React.FC<ComplianceWorkspaceProps> = ({ addToa
               ))}
             </select>
           </div>
+
+          {(auditResult || capturedImage || rawExtractedText || parameters.length > 0) && (
+            <button
+              type="button"
+              onClick={handleResetAudit}
+              className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-2xl border border-amber-300 dark:border-amber-800 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/50 dark:hover:bg-amber-900/60 text-amber-800 dark:text-amber-200 text-xs font-semibold shadow-xs transition-colors"
+              title="Reset workspace and start a fresh laboratory test audit"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+              <span>Reset Audit</span>
+            </button>
+          )}
 
           {onClose && (
             <button
@@ -933,8 +1027,47 @@ export const ComplianceWorkspace: React.FC<ComplianceWorkspaceProps> = ({ addToa
         </div>
       )}
 
-      {/* Extracted Certificate Traceability Banner (If text or image is captured) */}
-      {(rawExtractedText || capturedImage) && (
+      {/* Irrelevant Data Detected Alert Card */}
+      {irrelevantAlert && (
+        <div className="p-4 rounded-2xl border border-rose-300 dark:border-rose-900 bg-rose-50/95 dark:bg-rose-950/70 shadow-lg space-y-3 animate-in fade-in">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start space-x-3">
+              <span className="p-2 rounded-xl bg-rose-100 dark:bg-rose-900/60 text-rose-600 dark:text-rose-300 shrink-0 mt-0.5">
+                <AlertTriangle className="w-5 h-5" />
+              </span>
+              <div>
+                <h4 className="text-sm font-extrabold text-rose-900 dark:text-rose-100">
+                  Irrelevant Data Detected — Audit Aborted
+                </h4>
+                <p className="text-xs text-rose-800 dark:text-rose-200 mt-0.5">
+                  {irrelevantAlert.reason}
+                </p>
+                {irrelevantAlert.subject && (
+                  <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-200/80 dark:bg-rose-900 text-rose-800 dark:text-rose-200 border border-rose-300 dark:border-rose-800">
+                    Detected Subject: {irrelevantAlert.subject}
+                  </span>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                setIrrelevantAlert(null);
+                setCapturedImage(null);
+                setRawExtractedText('');
+              }}
+              className="text-xs text-rose-600 hover:text-rose-800 dark:text-rose-400 font-bold px-2.5 py-1 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/50 transition-colors"
+            >
+              Dismiss
+            </button>
+          </div>
+          <div className="text-[11px] text-rose-700 dark:text-rose-300 bg-white/80 dark:bg-slate-900/70 p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 leading-relaxed">
+            <strong>Laboratory Audit Requirement:</strong> The uploaded image or document is not related to Indian Standards or laboratory quality compliance. Please capture or upload a genuine NABL/BIS test certificate, chemical/physical test analysis, or parameter table (e.g. IS 14543 water, IS 1786 steel, IS 269 cement).
+          </div>
+        </div>
+      )}
+
+      {/* Extracted Certificate Traceability Banner (If text or image is captured and data is relevant) */}
+      {(rawExtractedText || capturedImage) && !irrelevantAlert && (
         <div className="glass-panel-3d p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">

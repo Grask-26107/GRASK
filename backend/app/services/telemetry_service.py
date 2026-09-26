@@ -2,7 +2,7 @@ import sqlite3
 import json
 import logging
 from typing import Dict, Any, List
-from app.core.database import get_db_connection
+from app.core.database import get_db_connection, init_db
 from app.models.schemas import TelemetryDashboardResponse
 
 logger = logging.getLogger(__name__)
@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 class TelemetryService:
     def get_dashboard_metrics(self) -> TelemetryDashboardResponse:
+        init_db()
         conn = get_db_connection()
         cursor = conn.cursor()
 

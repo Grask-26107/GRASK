@@ -3,6 +3,7 @@ import logging
 from typing import Dict, Any, List, Optional, Tuple
 from app.core.config import settings
 from app.services.multilingual_translator import multilingual_translator, SUPPORTED_LANGUAGES
+from app.services.domain_relevance_guard import domain_relevance_guard
 
 logger = logging.getLogger(__name__)
 
@@ -1021,27 +1022,162 @@ class NutriAnalyzerService:
         language: Optional[str] = "en"
     ) -> Dict[str, Any]:
         """
-        Executes end-to-end nutrition and ingredient safety auditing.
+        Executes end-to-end nutrition and ingredient safety auditing with
+        strict multimodal topic relevance guards and error correction.
         """
         raw_text = text or ""
         product_name = "Packaged Consumer Food Item"
         extracted_facts: Dict[str, Any] = {}
+        detected_subject = "Packaged Food"
+        corrected_text_summary = ""
 
-        # 1. If Image provided, inspect using Gemini Vision if configured
+        # 1. Clean grammatical and spelling mistakes in text if provided
+        if raw_text.strip():
+            corr_result = domain_relevance_guard.clean_and_correct_text(raw_text, "nutri_score")
+            raw_text = corr_result["corrected_text"]
+            corrected_text_summary = raw_text
+
+        # 2. If Image provided, inspect using multimodal DomainRelevanceGuard FIRST
         if image_base64:
-            vision_result = self._inspect_image_with_vision(image_base64)
-            if vision_result:
-                if vision_result.get("product_name"):
-                    product_name = vision_result["product_name"]
-                if vision_result.get("raw_text"):
-                    raw_text = (raw_text + "\n" + vision_result["raw_text"]).strip()
-                if vision_result.get("extracted_facts"):
-                    extracted_facts = vision_result["extracted_facts"]
+            inspection = domain_relevance_guard.inspect_image_for_feature(
+                image_base64=image_base64,
+                feature="nutri_score",
+                extra_text=raw_text
+            )
+            detected_subject = inspection.get("detected_subject", "Unidentified Image")
 
-        # 2. Parse nutrition values from text if not populated by vision
+            if not inspection.get("is_relevant", False):
+                logger.info(f"Nutri-analyzer rejected image: {inspection.get('relevance_reason')}")
+                return {
+                    "status": "IRRELEVANT_DATA",
+                    "is_relevant": False,
+                    "relevance_reason": inspection.get("relevance_reason", "Uploaded image does not show a food package or nutrition label."),
+                    "detected_subject": detected_subject,
+                    "corrected_text": corrected_text_summary,
+                    "product_name": "Irrelevant Visual Media",
+                    "verdict": "IRRELEVANT",
+                    "verdict_badge": "IRRELEVANT",
+                    "nutri_score_grade": "N/A",
+                    "nutri_score_points": 0,
+                    "score_breakdown": None,
+                    "summary_verdict": f"Irrelevant Data Detected: {inspection.get('relevance_reason')}",
+                    "spoken_summary": f"Irrelevant image detected. {inspection.get('relevance_reason')}",
+                    "spoken_language": language or "en",
+                    "sodium_mg": None,
+                    "sodium_level": "N/A",
+                    "trans_fat_g": None,
+                    "trans_fat_status": "N/A",
+                    "saturated_fat_g": None,
+                    "added_sugar_g": None,
+                    "added_sugar_level": "N/A",
+                    "has_palm_oil": False,
+                    "palm_oil_details": None,
+                    "hidden_sugars": [],
+                    "harmful_additives": [],
+                    "beneficial_ingredients": [],
+                    "persona_alerts": [],
+                    "fssai_compliance_notes": ["Please upload a clear photograph of a packaged food label or nutritional information table."],
+                    "raw_extracted_ingredients": [],
+                    "nutrition_table": {},
+                    "all_ingredients_analysis": [],
+                    "govt_limit_comparison": [],
+                    "usual_items_summary": []
+                }
+
+            if inspection.get("extracted_data"):
+                ext = inspection["extracted_data"]
+                if ext.get("product_name"):
+                    product_name = ext["product_name"]
+                if ext.get("extracted_facts"):
+                    extracted_facts = ext["extracted_facts"]
+                if ext.get("ingredients_list"):
+                    raw_text = (raw_text + "\nIngredients: " + ", ".join(ext["ingredients_list"])).strip()
+            if inspection.get("raw_text") and not raw_text:
+                raw_text = inspection["raw_text"]
+
+        # 3. If no image provided, check text relevance
+        elif raw_text.strip():
+            is_rel, rel_reason, _ = domain_relevance_guard.check_text_relevance(raw_text, "nutri_score")
+            if not is_rel:
+                logger.info(f"Nutri-analyzer rejected text: {rel_reason}")
+                return {
+                    "status": "IRRELEVANT_DATA",
+                    "is_relevant": False,
+                    "relevance_reason": rel_reason,
+                    "detected_subject": "unrelated text",
+                    "corrected_text": corrected_text_summary,
+                    "product_name": "Irrelevant Text Input",
+                    "verdict": "IRRELEVANT",
+                    "verdict_badge": "IRRELEVANT",
+                    "nutri_score_grade": "N/A",
+                    "nutri_score_points": 0,
+                    "score_breakdown": None,
+                    "summary_verdict": f"Irrelevant Data Detected: {rel_reason}",
+                    "spoken_summary": f"Irrelevant text detected. {rel_reason}",
+                    "spoken_language": language or "en",
+                    "sodium_mg": None,
+                    "sodium_level": "N/A",
+                    "trans_fat_g": None,
+                    "trans_fat_status": "N/A",
+                    "saturated_fat_g": None,
+                    "added_sugar_g": None,
+                    "added_sugar_level": "N/A",
+                    "has_palm_oil": False,
+                    "palm_oil_details": None,
+                    "hidden_sugars": [],
+                    "harmful_additives": [],
+                    "beneficial_ingredients": [],
+                    "persona_alerts": [],
+                    "fssai_compliance_notes": ["Please enter food ingredients or a nutrition facts table to analyze."],
+                    "raw_extracted_ingredients": [],
+                    "nutrition_table": {},
+                    "all_ingredients_analysis": [],
+                    "govt_limit_comparison": [],
+                    "usual_items_summary": []
+                }
+
+        # 4. If neither image nor text provided, or both empty
+        if not raw_text.strip() and not extracted_facts:
+            return {
+                "status": "IRRELEVANT_DATA",
+                "is_relevant": False,
+                "relevance_reason": "No food ingredients or nutritional information was detected in the input.",
+                "detected_subject": "empty input",
+                "corrected_text": "",
+                "product_name": "No Input Data",
+                "verdict": "IRRELEVANT",
+                "verdict_badge": "IRRELEVANT",
+                "nutri_score_grade": "N/A",
+                "nutri_score_points": 0,
+                "score_breakdown": None,
+                "summary_verdict": "No food ingredients or nutrition facts provided.",
+                "spoken_summary": "Please provide an image or text of food nutrition facts.",
+                "spoken_language": language or "en",
+                "sodium_mg": None,
+                "sodium_level": "N/A",
+                "trans_fat_g": None,
+                "trans_fat_status": "N/A",
+                "saturated_fat_g": None,
+                "added_sugar_g": None,
+                "added_sugar_level": "N/A",
+                "has_palm_oil": False,
+                "palm_oil_details": None,
+                "hidden_sugars": [],
+                "harmful_additives": [],
+                "beneficial_ingredients": [],
+                "persona_alerts": [],
+                "fssai_compliance_notes": ["No input provided."],
+                "raw_extracted_ingredients": [],
+                "nutrition_table": {},
+                "all_ingredients_analysis": [],
+                "govt_limit_comparison": [],
+                "usual_items_summary": []
+            }
+
+        # 5. Parse nutrition values from text if not populated by vision
         nutri_table = self._parse_nutrition_table(raw_text, extracted_facts)
 
-        # 3. Parse ingredient list from text
+        # 6. Parse ingredient list from text
         ingredients_list = self._extract_ingredients(raw_text)
 
         # 4. Decrypt Hidden Sugars
@@ -1150,6 +1286,11 @@ class NutriAnalyzerService:
         )
 
         return {
+            "status": "SUCCESS",
+            "is_relevant": True,
+            "relevance_reason": "Relevant food nutrition label analyzed successfully.",
+            "detected_subject": detected_subject,
+            "corrected_text": corrected_text_summary,
             "product_name": product_name,
             "verdict": verdict,
             "verdict_badge": verdict_badge,
@@ -1190,13 +1331,20 @@ class NutriAnalyzerService:
             import json
             import base64
 
-            # Clean base64 header
+            # Clean base64 header and detect mime type
             clean_b64 = image_base64
-            if "base64," in clean_b64:
+            mime_type = "image/jpeg"
+            if "data:" in clean_b64 and ";base64," in clean_b64:
+                parts = clean_b64.split(";base64,")
+                detected_mime = parts[0].replace("data:", "").strip()
+                if detected_mime:
+                    mime_type = detected_mime
+                clean_b64 = parts[1]
+            elif "base64," in clean_b64:
                 clean_b64 = clean_b64.split("base64,")[1]
 
             image_bytes = base64.b64decode(clean_b64)
-            vision_model = genai.GenerativeModel(settings.GEMINI_MODEL or "gemini-1.5-flash")
+            from app.core.gemini_manager import gemini_manager
 
             prompt = (
                 "You are an expert FSSAI Food Safety and Nutrition Inspector. "
@@ -1224,12 +1372,12 @@ class NutriAnalyzerService:
                 "}"
             )
 
-            response = vision_model.generate_content([
+            raw_resp, _ = gemini_manager.generate_with_fallback([
                 prompt,
-                {"mime_type": "image/jpeg", "data": image_bytes}
+                {"mime_type": mime_type, "data": image_bytes}
             ])
-
-            raw_resp = response.text.strip()
+            if not raw_resp:
+                return None
             # Clean markdown codeblocks if present
             if raw_resp.startswith("```json"):
                 raw_resp = raw_resp[7:]

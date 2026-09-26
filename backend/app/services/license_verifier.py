@@ -11,6 +11,7 @@ Enables instant verification of:
 import re
 import logging
 from typing import Dict, Any, List, Optional
+from app.services.domain_relevance_guard import domain_relevance_guard, INVALID_HUID_WORDS, AUTOMOTIVE_PATTERNS
 
 logger = logging.getLogger(__name__)
 
@@ -1611,11 +1612,11 @@ class LicenseVerifierService:
                         "priority": 98
                     })
 
-        # 2. Search for 14-digit FSSAI Food Safety License Number
-        fssai_matches = re.findall(r'(?i)(?:fssai|lic(?:ense)?(?:\s*no)?)?[\s:\.\-]*([12][\s\-0-9]{13,20}[0-9])', text)
-        for fm in fssai_matches:
+        # 2. Search for 14-digit FSSAI Food Safety License Number (including 13-digit OCR variations)
+        fssai_prefixed = re.findall(r'(?i)(?:fssai|lic(?:ense)?|lic\.?\s*no\.?|license\s*no\.?|no\.?)[\s:\.\-]+([12][0-9\-\s]{11,18}[0-9])', text)
+        for fm in fssai_prefixed:
             clean_fs = re.sub(r'\D', '', fm)
-            if len(clean_fs) == 14 and clean_fs[0] in ('1', '2'):
+            if len(clean_fs) in (13, 14) and clean_fs[0] in ('1', '2'):
                 if not any(f["value"] == clean_fs for f in found):
                     found.append({
                         "type": "fssai",
@@ -1782,9 +1783,58 @@ class LicenseVerifierService:
                 logger.debug(f"Native zxingcpp decoding pass skipped: {zx_err}")
 
             # -------------------------------------------------------------
+            # Multimodal Relevance Guard (Reject cars, animals, landscapes before LLM/OCR)
+            # -------------------------------------------------------------
+            if not barcode_from_stripes:
+                inspection = domain_relevance_guard.inspect_image_for_feature(
+                    image_base64=image_base64,
+                    feature="mark_check",
+                    extra_text=text
+                )
+                if not inspection.get("is_relevant", False):
+                    logger.info(f"License verifier rejected image: {inspection.get('relevance_reason')}")
+                    return {
+                        "is_relevant": False,
+                        "status": "IRRELEVANT_DATA",
+                        "relevance_reason": inspection.get("relevance_reason", "Uploaded image does not contain a product label, BIS mark, or barcode."),
+                        "detected_subject": inspection.get("detected_subject", "Unrelated Subject"),
+                        "primary": None,
+                        "all": [],
+                        "hybrid_summary": None,
+                        "llm_metadata": None
+                    }
+                if inspection.get("extracted_data"):
+                    llm_metadata = inspection["extracted_data"]
+                    bc = llm_metadata.get("barcode")
+                    if bc and not barcode_from_stripes:
+                        clean_bc = re.sub(r'\D', '', str(bc))
+                        if len(clean_bc) == 13 or (len(clean_bc) >= 12 and clean_bc.startswith("890")):
+                            barcode_from_stripes = clean_bc
+                    cml = llm_metadata.get("cml")
+                    if cml:
+                        clean_cml = re.sub(r'\D', '', str(cml))
+                        if len(clean_cml) in [7, 8, 10] and not any(f["value"] == clean_cml for f in found):
+                            found.append({"type": "cml", "value": clean_cml, "label": f"CM/L-{clean_cml}", "priority": 75})
+                    fssai = llm_metadata.get("fssai")
+                    if fssai:
+                        clean_fssai = re.sub(r'\D', '', str(fssai))
+                        if len(clean_fssai) == 14 and not any(f["value"] == clean_fssai for f in found):
+                            found.append({"type": "fssai", "value": clean_fssai, "label": f"FSSAI Lic. No: {clean_fssai}", "priority": 90})
+                    crs = llm_metadata.get("crs")
+                    if crs:
+                        clean_crs = re.sub(r'[^0-9]', '', str(crs))
+                        if len(clean_crs) == 8 and not any(clean_crs in f["value"] for f in found):
+                            found.append({"type": "crs", "value": f"R-{clean_crs}", "label": f"CRS: R-{clean_crs}", "priority": 85})
+                    huid = llm_metadata.get("huid")
+                    if huid:
+                        clean_huid = re.sub(r'[^A-Z0-9]', '', str(huid).upper())
+                        if len(clean_huid) == 6 and clean_huid not in INVALID_HUID_WORDS and any(c.isdigit() for c in clean_huid) and not any(f["value"] == clean_huid for f in found):
+                            found.append({"type": "huid", "value": clean_huid, "label": f"HUID: {clean_huid}", "priority": 60})
+
+            # -------------------------------------------------------------
             # Local Server-Side OCR Engine (Resilient Fallback when text is empty)
             # -------------------------------------------------------------
-            if not text and not barcode_from_stripes:
+            if not text and not barcode_from_stripes and not found:
                 try:
                     import subprocess, tempfile, os
                     with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as tf:
@@ -1829,13 +1879,10 @@ class LicenseVerifierService:
             # Channel B: Gemini Vision LLM (if configured)
             # -------------------------------------------------------------
             from app.core.config import settings
-            if settings.GEMINI_API_KEY:
+            from app.core.gemini_manager import gemini_manager
+            if settings.GEMINI_API_KEY and not llm_metadata:
                 try:
-                    import google.generativeai as genai
-                    genai.configure(api_key=settings.GEMINI_API_KEY)
                     import json
-                    vision_model = genai.GenerativeModel(settings.GEMINI_MODEL or "gemini-1.5-flash")
-
                     prompt = (
                         "You are the Bureau of Indian Standards (BIS) MANAK-Vision High-Precision Scanner.\n"
                         "Inspect this product packaging image carefully and extract all statutory markings and codes.\n"
@@ -1854,11 +1901,11 @@ class LicenseVerifierService:
                         "}"
                     )
 
-                    response = vision_model.generate_content([
-                        {"mime_type": "image/jpeg", "data": img_bytes},
-                        prompt
+                    resp_text, _ = gemini_manager.generate_with_fallback([
+                        prompt,
+                        {"mime_type": "image/jpeg", "data": img_bytes}
                     ])
-                    resp_text = response.text or ""
+                    resp_text = resp_text or ""
                     clean_json_match = re.search(r'\{.*\}', resp_text, re.DOTALL)
                     if clean_json_match:
                         llm_data = json.loads(clean_json_match.group(0))
@@ -1964,6 +2011,7 @@ class LicenseVerifierService:
         }
 
         return {
+            "is_relevant": True,
             "primary": primary,
             "all": found,
             "hybrid_summary": hybrid_summary,
@@ -1978,6 +2026,70 @@ class LicenseVerifierService:
     ) -> Dict[str, Any]:
         """Validates any Barcode, CM/L, FSSAI 14-digit, HUID, or CRS registration number against official registries."""
         
+        # 1. If image_base64 is provided, inspect image relevance first!
+        if image_base64:
+            inspection = domain_relevance_guard.inspect_image_for_feature(
+                image_base64=image_base64,
+                feature="mark_check",
+                extra_text=identifier
+            )
+            if not inspection.get("is_relevant", True):
+                return {
+                    "is_valid": False,
+                    "status": "IRRELEVANT_DATA",
+                    "is_relevant": False,
+                    "relevance_reason": inspection.get("relevance_reason", "Irrelevant data detected: Image does not contain statutory marks."),
+                    "detected_subject": inspection.get("detected_subject", "Unrelated Subject"),
+                    "mark_type": "Irrelevant / Non-Domain Data",
+                    "license_type": "None",
+                    "license_name": f"Irrelevant Media ({inspection.get('detected_subject')})",
+                    "brand_name": "N/A",
+                    "company": "N/A",
+                    "company_name": "N/A",
+                    "parent_company": "N/A",
+                    "product_name": "No Certification Mark Detected",
+                    "product_type": "Irrelevant Subject",
+                    "flagship_products": "N/A",
+                    "issue_year": "N/A",
+                    "expiry_date": "N/A",
+                    "identifier": identifier or "N/A",
+                    "standard_code": "None",
+                    "manufacturer": "N/A",
+                    "operating_unit": "N/A",
+                    "valid_until": "N/A",
+                    "details": {
+                        "reason": inspection.get("relevance_reason"),
+                        "detected_subject": inspection.get("detected_subject")
+                    },
+                    "guidelines": [
+                        "Irrelevant data detected. Uploaded image does not depict BIS ISI Mark, CM/L license, FSSAI license, Gold Hallmark, CRS R-Number, or GS1 barcode.",
+                        "Please upload or capture a photo of the product packaging or certification mark."
+                    ],
+                    "bis_care_instructions": "Ensure the camera is focused on the certification mark, CM/L number, or product label.",
+                    "grievance_redressal": "For statutory verification, please enter a valid 7/8-digit CM/L, 14-digit FSSAI, 6-digit HUID, or 13-digit Barcode."
+                }
+
+        # 2. Grammar, typo, sentence, and semantic cleanup for text identifier
+        raw_input = identifier or ""
+        clean_res = domain_relevance_guard.clean_and_correct_text(raw_input, feature="mark_check")
+        identifier = clean_res["corrected_text"]
+
+        if not identifier.strip():
+            return {
+                "is_valid": False,
+                "status": "IRRELEVANT_DATA",
+                "is_relevant": False,
+                "relevance_reason": "No license number or identifier provided.",
+                "detected_subject": "Empty Input",
+                "mark_type": "Unspecified",
+                "license_type": "None",
+                "license_name": "Empty Identifier",
+                "identifier": "",
+                "standard_code": "None",
+                "details": {"reason": "Identifier is empty"},
+                "guidelines": ["Please provide a valid CM/L, FSSAI, HUID, CRS, or Barcode identifier."]
+            }
+
         # If user passed text that contains full OCR output, extract primary identifier
         extracted_data = self.extract_identifiers_from_text(identifier)
         if extracted_data["primary"] and query_type == "auto" and len(identifier.strip()) > 20:
@@ -1987,6 +2099,44 @@ class LicenseVerifierService:
 
         clean_id = re.sub(r'[^a-zA-Z0-9]', '', identifier).strip().upper()
         digits_only = re.sub(r'\D', '', identifier)
+
+        # 3. Check for automotive or out-of-scope non-mark queries
+        is_rel, rel_reason, _ = domain_relevance_guard.check_text_relevance(identifier, feature="mark_check")
+        if not is_rel and not (len(digits_only) in [7, 8, 10, 12, 13, 14] or clean_id.startswith("R") or clean_id in GENUINE_HUID_REGISTRY or clean_id in GENUINE_LICENSE_REGISTRY):
+            return {
+                "is_valid": False,
+                "status": "IRRELEVANT_DATA",
+                "is_relevant": False,
+                "relevance_reason": rel_reason,
+                "detected_subject": "Out-of-Scope Text / Query",
+                "mark_type": "Irrelevant Query",
+                "license_type": "None",
+                "license_name": f"Irrelevant Query ({identifier})",
+                "brand_name": "N/A",
+                "company": "N/A",
+                "company_name": "N/A",
+                "parent_company": "N/A",
+                "product_type": "Out of Scope",
+                "product_name": "Out of Scope Query",
+                "flagship_products": "N/A",
+                "issue_year": "N/A",
+                "expiry_date": "N/A",
+                "identifier": identifier,
+                "standard_code": "None",
+                "manufacturer": "N/A",
+                "operating_unit": "N/A",
+                "valid_until": "N/A",
+                "details": {
+                    "reason": rel_reason,
+                    "corrected_text": identifier if clean_res["was_corrected"] else None
+                },
+                "guidelines": [
+                    "The provided input is not related to Indian Standards, BIS Certification, FSSAI licenses, or statutory product markings.",
+                    "Please provide a valid 7 or 8-digit CM/L license number, 14-digit FSSAI license, 6-digit HUID, CRS R-Number, or 13-digit GS1 barcode."
+                ],
+                "bis_care_instructions": "Check your product packaging for the ISI mark with CM/L number or FSSAI logo.",
+                "grievance_redressal": "For assistance on BIS standards or filing consumer complaints, call National Consumer Helpline at 1915."
+            }
 
         # -------------------------------------------------------------
         # 1. GS1 Barcode & GTIN-13 Verification (EAN-13: 890 or International)
@@ -2365,7 +2515,14 @@ class LicenseVerifierService:
         # -------------------------------------------------------------
         # 4. Check direct HUID match (6-character alphanumeric)
         # -------------------------------------------------------------
-        if clean_id in GENUINE_HUID_REGISTRY or (len(clean_id) == 6 and query_type in ["huid", "auto"]):
+        is_huid_candidate = (clean_id in GENUINE_HUID_REGISTRY) or (
+            len(clean_id) == 6
+            and clean_id not in INVALID_HUID_WORDS
+            and any(c.isdigit() for c in clean_id)
+            and any(c.isalpha() for c in clean_id)
+            and query_type in ["huid", "auto"]
+        )
+        if is_huid_candidate:
             if clean_id in GENUINE_HUID_REGISTRY:
                 data = GENUINE_HUID_REGISTRY[clean_id]
                 structure = {
@@ -2715,6 +2872,9 @@ class LicenseVerifierService:
             "bis_care_instructions": "Scan or report the suspicious product packaging using the BIS Care App camera feature or FoSCoS portal.",
             "grievance_redressal": "Lodge an instant grievance via BIS Care App, National Consumer Helpline: 1915 (Toll-Free), or FSSAI Food Safety Connect App."
         }
+
+    # Backward-compatible convenience alias
+    verify = verify_identifier
 
 
 license_verifier_service = LicenseVerifierService()

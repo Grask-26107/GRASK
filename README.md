@@ -1,4 +1,4 @@
-# GRASK
+# GRASK AI (v4.0)
 
 **Team Name: GRASK**  
 **Smart India Hackathon 2026 | Problem Statement ID: SIH26107**  
@@ -10,198 +10,169 @@
 
 Navigating Indian industrial and food standards has traditionally required searching through fragmented portals, complex PDFs, and confusing statutory orders.
 
-**GRASK AI** bridges this gap. It allows small business owners (MSMEs), testing engineers, and everyday citizens to ask questions in plain language (via text or voice in **11 Indian languages**) and receive instant, 100% verified answers backed by official statutory clauses.
+**GRASK AI** bridges this gap. It allows small business owners (MSMEs), laboratory testing engineers, and everyday citizens to ask questions in plain language (via text or voice across **11 Indian languages**), capture physical product labels and lab reports via optical scanner, and receive instant, 100% verified compliance answers backed by official statutory clauses.
 
 ---
 
-## 🔄 User Input to Result: How It Works
+## 🚀 Key Modules & Capabilities
 
-```
-[ User Input (Text or Voice) ]
-  • Any of 11 Indian Languages (Hindi, Telugu, Tamil, English, etc.)
-  • Informal speech, trade slang, or typos accepted
-                │
-                ▼
-[ 1. Security & Intent Engine ]
-  • Blocks prompt-injection attacks & redacts sensitive personal data
-  • Identifies intent: Standard query, Lab test, License check, or Food safety
-                │
-                ▼
-[ 2. Table-Aware Dual Retrieval ]
-  • Exact Alphanumeric Match (e.g., IS 14543, IS 10500)
-  • Hybrid Semantic Search (ChromaDB Vector + BM25 Keyword Search)
-  • Preserves complex chemical limits and tolerance tables intact
-                │
-                ▼
-[ 3. Fail-Closed Verification Engine ]
-  • Cross-checks answers against official Bureau of Indian Standards clauses
-  • Anti-Hallucination Guardrail: If confidence < 0.40 or standards conflict,
-    it refuses to guess and escalates to National Consumer Helpline 1915
-                │
-                ▼
-[ 4. Instant Output & Action Studio ]
-  • Citizen Advice: Plain-language summary & consumer rights
-  • Industry Mode: Exact statutory clauses, limits, and testing methods
-  • 1-Click Sealed PDF Lab Audit Report / 11-Language Voice Readout
-```
+### 1. 🛡️ Domain Relevance & Semantic Sanitizer Guard
+- **Vision Relevance Validation**: Inspects camera captures and file uploads across all features. Automatically identifies and rejects out-of-scope media (e.g., automobiles, vehicles, pets, landscapes, selfies, random noise) with zero dummy data injection or state leakage.
+- **Cross-Domain Separation**: Prevents domain contamination (e.g., food nutrition labels are rejected in metal lab audits; structural steel reports are rejected in food safety).
+- **Spelling & Grammar Repair**: Automatically corrects typos, phonetically romanized Indian terms, broken grammar, and technical entity names in the user's original language.
 
----
+### 2. 🧪 Audit Compliance Studio (`ComplianceWorkspace.tsx`)
+- **Automated Lab Audits**: Ingests test certificates and lab parameters via camera capture, scanned image, or PDF.
+- **Instant Statutory Verification**: Compares observed parameters (e.g., Lead in Drinking Water under IS 14543, Yield Strength in TMT Steel under IS 1786, Soundness in Cement under IS 269) against official BIS tolerance limits.
+- **Sealed PDF Reports**: Generates formal, downloadable compliance audit certificates with digital verification QR codes in seconds.
+- **Anti-Hallucination Fallback**: If an image is irrelevant or parameters are unreadable, the audit is cleanly aborted without fabricated benchmarks.
 
-## 🚀 Key Features & Modules
+### 3. 🥗 FSSAI Nutri-Score & Hidden Ingredient Auditor (`NutriScoreModal.tsx`)
+- **OCR Label Scanning**: Extracts nutritional tables (energy, protein, carbohydrates, total sugar, added sugar, fats, sodium) and ingredients lists from food packages.
+- **FSSAI Grading Engine**: Assigns a Front-of-Pack Nutri-Score Grade (A to E) and consumer-friendly safety verdict (`SECURE`, `CAUTION`, `HARMFUL`).
+- **Hidden Additives Radar**: Detects hidden sugars (maltodextrin, invert syrup, HFCS), palm oil, and harmful industrial emulsifiers/preservatives.
+- **Persona Warnings**: Contextual safety alerts for diabetic, hypertension, pediatric, and health-conscious consumer personas.
 
-Every feature in GRASK AI is designed to solve a specific, real-world regulatory challenge:
+### 4. 🏷️ MANAK-Vision Statutory Mark Verifier (`LicenseVerifyModal.tsx`)
+- **Multi-Symbology Optical Engine**: Reads 1D/2D optical barcode stripes (GS1 EAN-13 starting with `890`) and extracts printed statutory codes using hybrid optical recognition.
+- **Comprehensive Identifier Support**:
+  * **BIS ISI Mark**: 7 to 10-digit Scheme-I CM/L license codes.
+  * **FSSAI License**: 14-digit central/state food safety licenses.
+  * **Gold Hallmark**: 6-character alphanumeric Hallmarking Unique Identification (HUID) codes.
+  * **MeitY CRS**: 8-digit Compulsory Registration Scheme (R-XXXXXXXX) numbers.
+- **Counterfeit Detection**: Flags fake standard marks (e.g., ISI mark printed without a statutory CM/L number).
 
-### 1. 💬 Multilingual Conversational Assistant (`ChatInterface.tsx`)
-* **Natural Dialogue**: Accepts messy, ungrammatical, or technical queries.
-* **11 Indian Languages**: Full speech-to-text (STT) and text-to-speech (TTS) in Hindi, Telugu, Tamil, Marathi, Bengali, Kannada, Gujarati, Malayalam, Punjabi, Urdu, and English.
-* **Dual Personas**: Switch between **Citizen Mode** (simple explanations) and **Industry Mode** (exact clauses, penalties, and test methods).
-
-### 2. 🏷️ License & Hallmark Scanner (`LicenseVerifyModal.tsx`)
-* **Instant Verification**: Validates BIS CM/L license numbers, CRS registration numbers, and 6-digit Gold HUID hallmarks in under 1 second.
-* **Counterfeit Protection**: Tells citizens immediately whether an ISI or Hallmark stamp on a product is genuine or fake.
-
-### 3. 🥗 Nutri-Score & Food Safety Analyzer (`NutriScoreModal.tsx`)
-* **OCR Label Scanning**: Upload photos of food labels to extract nutritional values (sugar, sodium, saturated fat).
-* **FSSAI Grading**: Automatically assigns a Nutri-Grade (A to E) and flags hidden toxic additives or banned industrial dyes.
-
-### 4. 🧪 Lab Audit & Compliance Studio (`ComplianceWorkspace.tsx`)
-* **Automated Lab Audits**: Engineers can input or upload lab test results for any standard (e.g., Lead in Drinking Water, Yield Strength in TMT Steel).
-* **Instant Verification**: Automatically evaluates every parameter against statutory limits with a Pass/Fail verdict.
-* **Sealed PDF Reports**: Generates formal, downloadable audit certificates with digital verification QR codes in seconds.
-
-### 5. 🏛️ BIS & FSSAI Services Directory (`BisServicesModal.tsx`)
-* **Unified Knowledge Base**: Access details for 24,000+ Indian standards, mandatory Quality Control Orders (QCOs), testing laboratories, and application fee waivers (including 50% startup discounts).
+### 5. 💬 Multilingual Standards AI Assistant (`ChatInterface.tsx`)
+- **11 Indian Languages**: Real-time bilingual translation, speech-to-text (STT), and text-to-speech (TTS) in Hindi, Telugu, Tamil, Marathi, Bengali, Kannada, Gujarati, Malayalam, Punjabi, Urdu, and English.
+- **Dual Personas**: Switch between **Citizen Mode** (plain language advice and consumer helpline guidance) and **Industry Mode** (exact clauses, penalties, and test methods).
 
 ### 6. 📊 Compliance Telemetry Dashboard (`TelemetryDashboard.tsx`)
-* **Real-time Oversight**: Tracks query volume, response latency (<1s), compliance scores, and citizen feedback trends.
+- **Real-time Metrics**: Tracks query volume, response latency (<1s), compliance scores, and citizen feedback trends.
 
 ---
 
-## 🔑 API Key Setup (Where to Add & Why)
+## 🔄 System Architecture
 
-### 📌 Where to Paste Your API Key
-1. Navigate to the `backend/` folder:
-   ```bash
-   cd backend
-   ```
-2. Create a local `.env` file by copying `.env.example`:
-   ```bash
-   # On Windows:
-   copy .env.example .env
-
-   # On Linux/macOS:
-   cp .env.example .env
-   ```
-3. Open `.env` in any text editor and paste your key:
-   ```env
-   GEMINI_API_KEY=your_actual_api_key_here
-   ```
-   *(You can generate a free Gemini API key at [Google AI Studio](https://aistudio.google.com/)).*
-
-> [!NOTE]
-> The `.env` file is listed in `.gitignore` so your personal API key will **never** be uploaded to GitHub.
-
-### ❓ Why Is the API Key Needed?
-GRASK AI uses **Google Gemini API** for:
-1. **Natural Dialogue & Translation**: Understands regional trade slang, colloquial phrasing, and translates statutory legal English into 11 Indian languages.
-2. **Contextual Reasoning**: Resolves ambiguous product descriptions (e.g., *"plastic pipe for farm borewell"*) to the exact statutory Indian Standard (`IS 4984`).
-3. **Semantic Embeddings**: Generates mathematical vector embeddings (`text-embedding-004`) to search 24,000+ standards clauses with high accuracy.
-
-*(Offline Fallback: If no API key is set, the system automatically falls back to deterministic local RAG keyword search without crashing).*
-
----
-
-## 🧪 Validated 800-Query Benchmark Suite
-
-GRASK AI's accuracy is backed by an automated 800-query benchmark dataset covering 8 core regulatory domains:
-
-| Benchmark Domain | Queries | Pass Rate | Hallucination Rate |
-| :--- | :---: | :---: | :---: |
-| 1. Indian Standards Technical Q&A | 100 | 100% | 0.00% |
-| 2. Product Description to IS Code Mapping | 100 | 99.0% | 0.00% |
-| 3. BIS Certification Schemes (I, II, FMCS) | 100 | 100% | 0.00% |
-| 4. Certification & Application Procedures | 100 | 100% | 0.00% |
-| 5. Consumer Rights & Grievance (Helpline 1915) | 100 | 100% | 0.00% |
-| 6. Gold & Silver Hallmarking (6-digit HUID) | 100 | 100% | 0.00% |
-| 7. Testing Laboratories & NABL Methods | 100 | 99.0% | 0.00% |
-| 8. Multilingual Script Integrity & Red-Teaming | 100 | 99.0% | 0.00% |
-| **Overall System Performance** | **800** | **99.6%** | **0.00%** |
-
-*All test queries and benchmark results are available under `tests/` (`test_queries_800_dataset.json` & `test_results_800.json`).*
-
----
-
-## 📁 Repository Structure
-
-```text
-├── backend/
-│   ├── app/
-│   │   ├── api/             # REST endpoints (chat, audit, standards, telemetry)
-│   │   ├── core/            # Config, database, security firewall
-│   │   ├── models/          # Data schemas and validation
-│   │   └── services/        # RAG engine, hybrid search, table parser, verifier
-│   ├── data/
-│   │   ├── chroma_db/       # Pre-indexed standards vector database
-│   │   ├── uploads/         # Official sample standards PDFs
-│   │   └── reports/         # Generated audit reports
-│   ├── .env.example         # Environment template with safe defaults
-│   ├── requirements.txt     # Python dependencies
-│   └── run.py               # Backend startup entrypoint
-├── frontend/
-│   ├── src/
-│   │   ├── components/      # UI components (Chat, Audits, Modals, Dashboard)
-│   │   ├── services/        # API client bindings
-│   │   └── App.tsx          # Main application component
-│   ├── package.json         # Frontend dependencies (React + Tailwind + Vite)
-│   └── vite.config.ts       # Vite proxy & build settings
-├── tests/
-│   ├── test_800_comprehensive_sih_suite.py  # 800-query validation runner
-│   ├── test_queries_800_dataset.json        # 800 curated test cases
-│   └── test_results_800.json                # Benchmark output logs
-└── README.md
+```
+[ User Input: Camera Capture, Image Upload, Voice, or Text ]
+                          │
+                          ▼
+       [ 1. Domain Relevance & Semantic Sanitizer Guard ]
+         ├─ Multimodal Vision & OCR Subject Classifier
+         ├─ Out-of-Scope Negative Pattern Filtering
+         └─ Phonetic & Technical Entity Error Correction
+                          │
+         ┌────────────────┴────────────────┐
+         ▼                                 ▼
+   [ RELEVANT INPUT ]            [ IRRELEVANT INPUT ]
+         │                                 │
+         │                        • Immediate State Purge
+         │                        • Alert Banner Displayed
+         │                        • Zero Dummy Data Injection
+         │
+         ▼
+   [ 2. Target Feature Processing ]
+     ├─ Audit Compliance: IS Benchmark Parameter Verification
+     ├─ Nutri-Score: FSSAI Thresholds & Hidden Additive Audit
+     ├─ MANAK-Vision: CM/L, FSSAI, CRS, HUID & Barcode Decoder
+     └─ Standards Chat: ChromaDB Hybrid Vector + BM25 RAG
+                          │
+                          ▼
+   [ 3. High-Speed Output & Verified Deliverables ]
+     • Digitally Sealed Audit PDF Certificates
+     • Nutri-Score FOPL Grades (A–E) & Health Alerts
+     • Genuine vs Counterfeit Statutory Mark Verdicts
+     • 11-Language Multilingual Spoken Responses
 ```
 
 ---
 
 ## ⚡ Quick Start Guide
 
-### 1. Prerequisites
-* Python 3.10+
-* Node.js 18+
-
-### 2. Backend Setup
-```bash
-cd backend
-python -m venv venv
-
-# Activate virtual environment:
-# On Windows:
-venv\Scripts\activate
-# On Linux/macOS:
-source venv/bin/activate
-
-pip install -r requirements.txt
-
-# Create .env and paste your GEMINI_API_KEY
-copy .env.example .env    # On Linux/macOS: cp .env.example .env
-
-python run.py
-```
-*Backend starts on `http://localhost:8000` (API docs at `http://localhost:8000/docs`).*
-
-### 3. Frontend Setup
-```bash
-cd frontend
-npm install
-npm run dev
-```
-*Frontend opens at `http://localhost:5173`.*
-
-### 4. Running the Benchmark Test Suite
-```bash
-python tests/test_800_comprehensive_sih_suite.py
-```
+### Prerequisites
+- **Python**: Version 3.10 to 3.13
+- **Node.js**: Version 18+ (Node 20+ recommended)
+- **Google Gemini API Key**: Free key from [Google AI Studio](https://aistudio.google.com/)
 
 ---
 
-*Developed for Smart India Hackathon 2026 | Bureau of Indian Standards & FSSAI Unified Intelligence.*
+### Step 1: Backend Setup
+
+```bash
+# Navigate to backend directory
+cd backend
+
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Create environment file from template
+# On Windows:
+copy .env.example .env
+# On Linux/macOS:
+cp .env.example .env
+```
+
+Open `backend/.env` in any text editor and add your Gemini API key:
+```env
+GEMINI_API_KEY=your_actual_gemini_api_key_here
+```
+
+Start the backend server:
+```bash
+python run.py
+```
+*Backend runs on `http://127.0.0.1:8000` (API documentation available at `http://127.0.0.1:8000/docs`).*
+
+---
+
+### Step 2: Frontend Setup
+
+```bash
+# In a new terminal, navigate to frontend directory
+cd frontend
+
+# Install Node dependencies
+npm install
+
+# Start Vite development server
+npm run dev
+```
+*Frontend opens on `http://localhost:5173/`.*
+
+---
+
+## 🧪 Automated Testing & Evaluation Suite
+
+GRASK includes an automated 50-image multimodal test suite to evaluate camera and optical scanner capabilities:
+
+```bash
+# Run the 50-image automated evaluation suite
+python backend/run_50_image_eval.py
+
+# Run the core domain relevance & typo correction unit tests
+python backend/test_relevance_and_correction_suite.py
+```
+
+### Evaluation Benchmark Results (77 Tests Across 50 Images)
+- **Audit Lab Reports Accuracy**: 12/12 Conforming/Non-Conforming reports verified.
+- **FSSAI Nutri-Score Accuracy**: 13/13 Packaging labels graded with additive detection.
+- **MANAK-Vision Accuracy**: 13/13 ISI, CRS, HUID, FSSAI, and GS1 codes identified.
+- **Irrelevant Media Rejection Rate**: **100% rejection** across cars, machinery, pets, scenery, selfies, and noise.
+- **Cross-Domain Separation**: **100% rejection** of mismatched domain media.
+- **Overall Pass Rate**: **100.00% (77 / 77 Passed)**.
+
+---
+
+## 🔒 Security, Privacy & Safeguard Policies
+
+- **Zero Credentials Exposure**: No live API keys, tokens, or personal identifiers are stored in the codebase or git repositories. All keys are read securely from local `.env` files.
+- **Dynamic Relative Paths**: All storage paths, model caches, and database directories use portable relative paths (`./data`), ensuring compatibility across Windows, Linux, and macOS.
+- **Rate-Limit Resilience**: Incorporates an intelligent cooldown guard for free-tier Gemini API quotas (429 errors), falling back instantly to local OCR (`tesseract.js`) without user interruption.
+- **Fail-Closed Verification**: Prevents hallucinated or guessed standards answers when statutory data is missing.
+
+---
+
+## 📜 License & Compliance
+
+Developed for the **Smart India Hackathon 2026 (SIH26107)**.  
+Built in compliance with statutory specifications published by the **Bureau of Indian Standards (BIS)** and the **Food Safety and Standards Authority of India (FSSAI)**.

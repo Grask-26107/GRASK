@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     
     # Gemini AI
     GEMINI_API_KEY: str = Field(default="", env="GEMINI_API_KEY")
-    GEMINI_MODEL: str = Field(default="gemini-1.5-flash", env="GEMINI_MODEL")
+    GEMINI_MODEL: str = Field(default="gemini-3.8-flash", env="GEMINI_MODEL")
     EMBEDDING_MODEL: str = Field(default="models/text-embedding-004", env="EMBEDDING_MODEL")
     
     # CORS
@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     ADMIN_API_KEY: str = "bis-admin-secret-key-2026"
     
     class Config:
-        env_file = ".env"
+        env_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), ".env")
         extra = "allow"
 
 

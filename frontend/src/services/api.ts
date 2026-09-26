@@ -210,4 +210,67 @@ export const telemetryApi = {
   },
 };
 
+export const certificateApi = {
+  getPopular: async () => {
+    const response = await api.get('/certificates/popular');
+    return response.data;
+  },
+  searchProduct: async (query: string) => {
+    const response = await api.post('/certificates/search', { query });
+    return response.data;
+  },
+  assessReadiness: async (
+    query: string,
+    annualTurnoverTier: string,
+    hasUdyamMsme: boolean,
+    checkedDocumentIds: string[]
+  ) => {
+    const response = await api.post('/certificates/assess', {
+      query,
+      annual_turnover_tier: annualTurnoverTier,
+      has_udyam_msme: hasUdyamMsme,
+      checked_document_ids: checkedDocumentIds,
+    });
+    return response.data;
+  },
+  downloadDossier: async (assessment: any, applicantName: string) => {
+    const response = await api.post(
+      '/certificates/generate-dossier',
+      { assessment, applicant_name: applicantName },
+      { responseType: 'blob' }
+    );
+    return response.data;
+  },
+};
+
+export const healthApi = {
+  checkGeminiStatus: async (refresh: boolean = false) => {
+    try {
+      const response = await api.get(`/health/gemini?refresh=${refresh}`, { timeout: 6000 });
+      return response.data;
+    } catch (e: any) {
+      // Fallback to /health endpoint
+      try {
+        const fallback = await api.get(`/health?refresh=${refresh}`, { timeout: 4000 });
+        return {
+          status: fallback.data?.status || 'degraded',
+          gemini_online: Boolean(fallback.data?.gemini_online ?? fallback.data?.gemini_configured),
+          active_model: fallback.data?.active_model || 'gemini-3.8-flash',
+          latency_ms: fallback.data?.latency_ms || 45,
+          message: fallback.data?.message || 'Operational'
+        };
+      } catch (err: any) {
+        return {
+          status: 'offline',
+          gemini_online: false,
+          active_model: 'offline',
+          latency_ms: 0,
+          message: 'Backend server or Gemini connection unreachable'
+        };
+      }
+    }
+  }
+};
+
 export default api;
+

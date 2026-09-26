@@ -246,6 +246,31 @@ def extract_product_identifiers(payload: Dict[str, Any]) -> Dict[str, Any]:
     
     extracted = license_verifier_service.extract_from_image_and_text(text=raw_text, image_base64=image_base64)
     
+    if extracted.get("is_relevant") is False:
+        return {
+            "status": "IRRELEVANT_DATA",
+            "is_relevant": False,
+            "relevance_reason": extracted.get("relevance_reason", "Irrelevant data detected: Media does not contain statutory marks."),
+            "detected_subject": extracted.get("detected_subject", "Unrelated Subject"),
+            "extracted_identifiers": [],
+            "primary_identifier": None,
+            "hybrid_summary": None,
+            "llm_metadata": None,
+            "verification": {
+                "is_valid": False,
+                "status": "IRRELEVANT_DATA",
+                "is_relevant": False,
+                "relevance_reason": extracted.get("relevance_reason", "Irrelevant data detected."),
+                "detected_subject": extracted.get("detected_subject", "Unrelated Subject"),
+                "mark_type": "Irrelevant / Non-Domain Data",
+                "license_name": f"Irrelevant Media ({extracted.get('detected_subject')})",
+                "guidelines": [
+                    "Irrelevant data detected: Uploaded image does not depict BIS ISI Mark, CM/L license, FSSAI license, Gold Hallmark, CRS R-Number, or GS1 barcode.",
+                    "Please capture or upload a clear photo of the product packaging or certification mark."
+                ]
+            }
+        }
+
     # Auto-verify primary match if found
     verification_result = None
     if extracted.get("primary"):
@@ -270,8 +295,11 @@ def extract_product_identifiers(payload: Dict[str, Any]) -> Dict[str, Any]:
 
     return {
         "status": "SUCCESS",
-        "extracted_identifiers": extracted["all"],
-        "primary_identifier": extracted["primary"],
+        "is_relevant": True,
+        "relevance_reason": extracted.get("relevance_reason", "Relevant certification mark data detected."),
+        "detected_subject": extracted.get("detected_subject", "Packaging / Document"),
+        "extracted_identifiers": extracted.get("all", []),
+        "primary_identifier": extracted.get("primary"),
         "hybrid_summary": extracted.get("hybrid_summary"),
         "llm_metadata": extracted.get("llm_metadata"),
         "verification": verification_result

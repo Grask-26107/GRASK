@@ -36,6 +36,7 @@ interface SidebarProps {
   onOpenLicenseVerify: () => void;
   onOpenComplianceAudit: () => void;
   onOpenNutriScore?: () => void;
+  onOpenApplyModal?: () => void;
   onOpenBisService: (section: 'standards_clubs' | 'nits_training' | 'lab_recognition' | 'consumer_protection' | 'departments') => void;
   onOpenTelemetry: () => void;
 }
@@ -53,6 +54,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenLicenseVerify,
   onOpenComplianceAudit,
   onOpenNutriScore,
+  onOpenApplyModal,
   onOpenBisService,
   onOpenTelemetry,
 }) => {
@@ -208,6 +210,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       </span>
                     </div>
                     <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">Harmful vs Secure Decrypter</span>
+                  </div>
+                </button>
+              )}
+
+              {onOpenApplyModal && (
+                <button
+                  type="button"
+                  onClick={onOpenApplyModal}
+                  className="w-full text-left px-2.5 py-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white flex items-center space-x-2.5 transition-colors group"
+                >
+                  <div className="w-6 h-6 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 group-hover:bg-amber-500 group-hover:text-white dark:group-hover:text-slate-900 transition-colors">
+                    <Award className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="flex-1 truncate">
+                    <div className="flex items-center space-x-1.5">
+                      <span className="font-semibold block truncate">Ready to Apply</span>
+                      <span className="px-1 py-0.2 rounded text-[8px] font-bold bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                        50% MSME
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">Certificate & Dossier Studio</span>
                   </div>
                 </button>
               )}

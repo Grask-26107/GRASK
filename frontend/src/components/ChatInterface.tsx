@@ -26,8 +26,15 @@ import {
   Camera,
   Search,
   FileCheck2,
-  ArrowUp
+  ArrowUp,
+  Award,
+  /* [FEATURE: SCHEME_FINDER] */
+  Compass
 } from 'lucide-react';
+/* [FEATURE: SCHEME_FINDER] - START */
+import { SchemeFinderModal } from './SchemeFinderModal';
+/* [FEATURE: SCHEME_FINDER] - END */
+import { GeminiStatusIndicator } from './GeminiStatusIndicator';
 import { ChatMode, ChatMessage, Citation } from '../types';
 import { chatApi, feedbackApi } from '../services/api';
 import { SUPPORTED_LANGUAGES } from '../constants/languages';
@@ -42,6 +49,7 @@ interface ChatInterfaceProps {
   onOpenLicenseVerify?: () => void;
   onOpenComplianceAudit?: () => void;
   onOpenNutriScore?: () => void;
+  onOpenApplyModal?: (query?: string) => void;
   selectedLanguage: string;
   onLanguageChange: (lang: string) => void;
   messages: ChatMessage[];
@@ -57,6 +65,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   onOpenLicenseVerify,
   onOpenComplianceAudit,
   onOpenNutriScore,
+  onOpenApplyModal,
   selectedLanguage,
   onLanguageChange,
   messages,
@@ -70,6 +79,10 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isSpeaking, setIsSpeaking] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
+
+  /* [FEATURE: SCHEME_FINDER] - START */
+  const [isSchemeFinderOpen, setIsSchemeFinderOpen] = useState(false);
+  /* [FEATURE: SCHEME_FINDER] - END */
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -421,6 +434,30 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
             </button>
           )}
 
+          {/* [FEATURE: SCHEME_FINDER] - START */}
+          <button
+            onClick={() => setIsSchemeFinderOpen(true)}
+            className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-colors shadow-2xs"
+            title="BIS Scheme Finder — 3-Step Certification Route Navigator"
+          >
+            <Compass className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+            <span className="hidden sm:inline">Scheme Finder</span>
+            <span className="sm:hidden">Schemes</span>
+          </button>
+          {/* [FEATURE: SCHEME_FINDER] - END */}
+
+          {onOpenApplyModal && (
+            <button
+              onClick={() => onOpenApplyModal()}
+              className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors shadow-2xs"
+              title="Ready to Apply — Statutory Certificate & MSME Subsidy Studio"
+            >
+              <Award className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+              <span className="hidden sm:inline">Ready to Apply</span>
+              <span className="sm:hidden">Apply</span>
+            </button>
+          )}
+
           {/* Single Official Translation Selector (Beside Nutri-Score) */}
           <div className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60 shadow-xs">
             <Globe className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
@@ -441,6 +478,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
         {/* Right side controls */}
         <div className="flex items-center space-x-2">
+          {/* Real-time Gemini AI Live Status Indicator (Green Online / Red Blinking Alert) */}
+          <GeminiStatusIndicator addToast={addToast} />
+
           {/* Clear Session */}
           <button
             onClick={clearChat}
@@ -729,6 +769,18 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
               </button>
             )}
 
+            {/* Ready to Apply Certificate Studio */}
+            {onOpenApplyModal && (
+              <button
+                type="button"
+                onClick={() => onOpenApplyModal()}
+                className="p-2 text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700/60 transition-colors"
+                title="Ready to Apply — Statutory Certificate & MSME Subsidy Studio"
+              >
+                <Award className="w-5 h-5 text-amber-500" />
+              </button>
+            )}
+
             {/* Input Text Field */}
             <input
               type="text"
@@ -773,6 +825,16 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
           </p>
         </div>
       </div>
+
+      {/* [FEATURE: SCHEME_FINDER] - START */}
+      <SchemeFinderModal
+        isOpen={isSchemeFinderOpen}
+        onClose={() => setIsSchemeFinderOpen(false)}
+        onOpenApplyModal={onOpenApplyModal}
+        onAskAi={(query) => handleSendMessage(query)}
+        addToast={addToast}
+      />
+      {/* [FEATURE: SCHEME_FINDER] - END */}
     </div>
   );
 };

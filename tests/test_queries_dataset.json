@@ -1,0 +1,817 @@
+{
+  "total_queries": 100,
+  "categories": [
+    "indian_standards_qa",
+    "product_recommendations",
+    "fssai_food_safety_security",
+    "certification_schemes",
+    "certification_processes",
+    "consumer_rights_verification",
+    "hallmarking_huid",
+    "testing_laboratories",
+    "ungrammatical_typo_queries",
+    "multilingual_queries"
+  ],
+  "queries": [
+    {
+      "id": 1,
+      "category": "indian_standards_qa",
+      "difficulty": "short_1_2_words",
+      "query": "packaged water",
+      "expected_domain": "IS 14543:2018",
+      "expected_keywords": ["IS 14543", "packaged drinking water", "permissible limits"]
+    },
+    {
+      "id": 2,
+      "category": "indian_standards_qa",
+      "difficulty": "short_1_2_words",
+      "query": "fe 500d",
+      "expected_domain": "IS 1786:2008",
+      "expected_keywords": ["IS 1786", "500", "yield strength", "TMT"]
+    },
+    {
+      "id": 3,
+      "category": "indian_standards_qa",
+      "difficulty": "short_1_2_words",
+      "query": "cement",
+      "expected_domain": "IS 269:2015",
+      "expected_keywords": ["IS 269", "Ordinary Portland Cement", "compressive strength"]
+    },
+    {
+      "id": 4,
+      "category": "indian_standards_qa",
+      "difficulty": "short_1_2_words",
+      "query": "helmets",
+      "expected_domain": "IS 4151:2015",
+      "expected_keywords": ["IS 4151", "protective helmets", "impact"]
+    },
+    {
+      "id": 5,
+      "category": "indian_standards_qa",
+      "difficulty": "short_1_2_words",
+      "query": "is 1293",
+      "expected_domain": "IS 1293:2019",
+      "expected_keywords": ["IS 1293", "plugs", "sockets", "shutter"]
+    },
+    {
+      "id": 6,
+      "category": "indian_standards_qa",
+      "difficulty": "medium",
+      "query": "What are the permissible limits for Lead and Arsenic in Packaged Drinking Water under IS 14543?",
+      "expected_domain": "IS 14543:2018",
+      "expected_keywords": ["0.01", "Lead", "Arsenic", "IS 14543"]
+    },
+    {
+      "id": 7,
+      "category": "indian_standards_qa",
+      "difficulty": "medium",
+      "query": "What is the minimum yield strength and elongation required for Fe 500D rebars under IS 1786?",
+      "expected_domain": "IS 1786:2008",
+      "expected_keywords": ["500", "16%", "yield stress", "IS 1786"]
+    },
+    {
+      "id": 8,
+      "category": "indian_standards_qa",
+      "difficulty": "hard",
+      "query": "Explain the 100-hour internal hydrostatic pressure test for PE 100 high density polyethylene pipes under IS 4984.",
+      "expected_domain": "IS 4984:2016",
+      "expected_keywords": ["IS 4984", "hydrostatic", "PE 100", "pressure"]
+    },
+    {
+      "id": 9,
+      "category": "indian_standards_qa",
+      "difficulty": "hard",
+      "query": "What are the child safety shutter and insulation resistance requirements in IS 1293:2019 for household sockets?",
+      "expected_domain": "IS 1293:2019",
+      "expected_keywords": ["IS 1293", "shutter", "insulation resistance", "child safety"]
+    },
+    {
+      "id": 10,
+      "category": "indian_standards_qa",
+      "difficulty": "complex_mixed",
+      "query": "Compare IS 10500 drinking water parameters with IS 14543 packaged drinking water regarding TDS, microbiological limits, and mandatory certification.",
+      "expected_domain": "IS 14543 / IS 10500",
+      "expected_keywords": ["IS 10500", "IS 14543", "TDS", "ISI mark", "microbiological"]
+    },
+    {
+      "id": 11,
+      "category": "product_recommendations",
+      "difficulty": "short_1_2_words",
+      "query": "solar",
+      "expected_domain": "Solar Standards",
+      "expected_keywords": ["IS 12933", "IS 14286", "solar"]
+    },
+    {
+      "id": 12,
+      "category": "product_recommendations",
+      "difficulty": "short_1_2_words",
+      "query": "ev battery",
+      "expected_domain": "EV Battery Standards",
+      "expected_keywords": ["IS 16046", "IS 17855", "battery"]
+    },
+    {
+      "id": 13,
+      "category": "product_recommendations",
+      "difficulty": "short_1_2_words",
+      "query": "solar water heater",
+      "expected_domain": "IS 12933",
+      "expected_keywords": ["IS 12933", "solar", "flat plate collector"]
+    },
+    {
+      "id": 14,
+      "category": "product_recommendations",
+      "difficulty": "medium",
+      "query": "Which Indian Standard applies to manufacturing biodegradable compostable plastic carry bags and packaging films?",
+      "expected_domain": "IS 17088",
+      "expected_keywords": ["IS 17088", "biodegradable", "compostable"]
+    },
+    {
+      "id": 15,
+      "category": "product_recommendations",
+      "difficulty": "medium",
+      "query": "Recommend applicable standards for domestic solar flat plate water heating collectors and storage tanks.",
+      "expected_domain": "IS 12933",
+      "expected_keywords": ["IS 12933", "solar", "water heater"]
+    },
+    {
+      "id": 16,
+      "category": "product_recommendations",
+      "difficulty": "medium",
+      "query": "Which standard specifies safety requirements for lithium-ion secondary cells and batteries used in portable electronics?",
+      "expected_domain": "IS 16046",
+      "expected_keywords": ["IS 16046", "lithium", "CRS"]
+    },
+    {
+      "id": 17,
+      "category": "product_recommendations",
+      "difficulty": "hard",
+      "query": "We are developing an electric two-wheeler traction motor controller and fast charger. What are the mandatory AIS and BIS standards?",
+      "expected_domain": "IS 17017 / AIS 156",
+      "expected_keywords": ["IS 17017", "charger", "electric vehicle", "safety"]
+    },
+    {
+      "id": 18,
+      "category": "product_recommendations",
+      "difficulty": "hard",
+      "query": "Recommend statutory standards and testing clauses for multilayer barrier packaging intended for aseptic packaging of liquid milk.",
+      "expected_domain": "Food Contact Plastics",
+      "expected_keywords": ["IS 9845", "IS 10146", "migration", "food contact"]
+    },
+    {
+      "id": 19,
+      "category": "product_recommendations",
+      "difficulty": "complex_mixed",
+      "query": "I am manufacturing agricultural solar water pumping systems including PV arrays, inverters, and submersible pump sets under PM-KUSUM. Which standards and test methods govern this?",
+      "expected_domain": "PM-KUSUM Solar Standards",
+      "expected_keywords": ["IS 14286", "IS 8034", "solar pump", "inverter"]
+    },
+    {
+      "id": 20,
+      "category": "product_recommendations",
+      "difficulty": "complex_mixed",
+      "query": "A startup is producing recycled plastic granules for packaging food commodities. Does BIS permit this and what standard governs food grade plastics?",
+      "expected_domain": "IS 14534 / IS 9845",
+      "expected_keywords": ["IS 14534", "IS 9845", "food contact", "recycling"]
+    },
+    {
+      "id": 21,
+      "category": "fssai_food_safety_security",
+      "difficulty": "short_1_2_words",
+      "query": "fssai",
+      "expected_domain": "FSSAI Regulations",
+      "expected_keywords": ["FSSAI", "FoSCoS", "Food Safety"]
+    },
+    {
+      "id": 22,
+      "category": "fssai_food_safety_security",
+      "difficulty": "short_1_2_words",
+      "query": "fssai license",
+      "expected_domain": "FoSCoS Licensing",
+      "expected_keywords": ["FoSCoS", "Central License", "State License", "Basic Registration"]
+    },
+    {
+      "id": 23,
+      "category": "fssai_food_safety_security",
+      "difficulty": "short_1_2_words",
+      "query": "food adulteration",
+      "expected_domain": "FSSAI DART",
+      "expected_keywords": ["DART", "adulteration", "FSSAI", "1915"]
+    },
+    {
+      "id": 24,
+      "category": "fssai_food_safety_security",
+      "difficulty": "short_1_2_words",
+      "query": "fortified food",
+      "expected_domain": "FSSAI Fortification",
+      "expected_keywords": ["+F Logo", "fortified", "Vitamin A", "Iron"]
+    },
+    {
+      "id": 25,
+      "category": "fssai_food_safety_security",
+      "difficulty": "short_1_2_words",
+      "query": "organic food",
+      "expected_domain": "Jaivik Bharat",
+      "expected_keywords": ["Jaivik Bharat", "NPOP", "PGS-India", "organic"]
+    },
+    {
+      "id": 26,
+      "category": "fssai_food_safety_security",
+      "difficulty": "medium",
+      "query": "What is the difference between FSSAI Basic Registration, State License, and Central License under FoSCoS?",
+      "expected_domain": "FoSCoS Licensing Tiers",
+      "expected_keywords": ["12 Lakh", "20 Crore", "Basic Registration", "Central License"]
+    },
+    {
+      "id": 27,
+      "category": "fssai_food_safety_security",
+      "difficulty": "medium",
+      "query": "Why is dual certification (both BIS ISI mark and FSSAI license) legally mandatory for selling packaged drinking water in India?",
+      "expected_domain": "Dual Certification BIS + FSSAI",
+      "expected_keywords": ["IS 14543", "FSS Act 2006", "CM/L", "FoSCoS", "mandatory"]
+    },
+    {
+      "id": 28,
+      "category": "fssai_food_safety_security",
+      "difficulty": "hard",
+      "query": "How can consumers detect adulteration of detergent in milk and argemone oil in cooking oil using FSSAI DART methods?",
+      "expected_domain": "FSSAI DART Tests",
+      "expected_keywords": ["lather", "Nitric Acid", "argemone", "detergent", "DART"]
+    },
+    {
+      "id": 29,
+      "category": "fssai_food_safety_security",
+      "difficulty": "hard",
+      "query": "Explain the statutory storage specifications for food grain godowns and silos under IS 6608 to protect national food security.",
+      "expected_domain": "IS 6608 Food Grain Storage",
+      "expected_keywords": ["IS 6608", "godown", "silo", "moisture", "plinth"]
+    },
+    {
+      "id": 30,
+      "category": "fssai_food_safety_security",
+      "difficulty": "complex_mixed",
+      "query": "I want to start manufacturing fortified baby cereal foods in Maharashtra. Explain the dual certification under IS 11536, FSSAI Central License via FoSCoS, nutritional limits for protein and fat, and packaging requirements.",
+      "expected_domain": "Infant Food Dual Certification",
+      "expected_keywords": ["IS 11536", "FSSAI Central License", "protein", "fat", "IMS Act"]
+    },
+    {
+      "id": 31,
+      "category": "certification_schemes",
+      "difficulty": "short_1_2_words",
+      "query": "scheme 1",
+      "expected_domain": "Scheme-I ISI Mark",
+      "expected_keywords": ["Scheme-I", "ISI Mark", "CM/L", "Manakonline"]
+    },
+    {
+      "id": 32,
+      "category": "certification_schemes",
+      "difficulty": "short_1_2_words",
+      "query": "scheme 2",
+      "expected_domain": "Scheme-II CRS",
+      "expected_keywords": ["Scheme-II", "CRS", "electronics", "MeitY"]
+    },
+    {
+      "id": 33,
+      "category": "certification_schemes",
+      "difficulty": "short_1_2_words",
+      "query": "crs",
+      "expected_domain": "Compulsory Registration Scheme",
+      "expected_keywords": ["CRS", "crsbis.in", "electronics", "R-number"]
+    },
+    {
+      "id": 34,
+      "category": "certification_schemes",
+      "difficulty": "short_1_2_words",
+      "query": "fmcs",
+      "expected_domain": "Foreign Manufacturers Certification",
+      "expected_keywords": ["FMCS", "foreign", "factory audit", "SAARC"]
+    },
+    {
+      "id": 35,
+      "category": "certification_schemes",
+      "difficulty": "medium",
+      "query": "What is the difference between BIS Scheme-I (ISI Mark Scheme) and Scheme-II (Compulsory Registration Scheme - CRS)?",
+      "expected_domain": "Scheme Comparison",
+      "expected_keywords": ["Scheme-I", "Scheme-II", "factory audit", "self-declaration", "CRS"]
+    },
+    {
+      "id": 36,
+      "category": "certification_schemes",
+      "difficulty": "medium",
+      "query": "How does the Foreign Manufacturers Certification Scheme (FMCS) work for international plants exporting goods to India?",
+      "expected_domain": "FMCS Guidance",
+      "expected_keywords": ["FMCS", "AIR", "Authorized Indian Representative", "audit"]
+    },
+    {
+      "id": 37,
+      "category": "certification_schemes",
+      "difficulty": "hard",
+      "query": "What is the Eco-Mark Scheme under BIS and what are the specific criteria for household detergents and paper products?",
+      "expected_domain": "Eco-Mark Scheme",
+      "expected_keywords": ["Eco-Mark", "earthen pot", "biodegradability", "environmental"]
+    },
+    {
+      "id": 38,
+      "category": "certification_schemes",
+      "difficulty": "hard",
+      "query": "Under what statutory circumstances does BIS issue a Scheme-IV Certificate of Conformity instead of regular license?",
+      "expected_domain": "Scheme-IV Certificate of Conformity",
+      "expected_keywords": ["Scheme-IV", "Certificate of Conformity", "batch-wise", "lot inspection"]
+    },
+    {
+      "id": 39,
+      "category": "certification_schemes",
+      "difficulty": "complex_mixed",
+      "query": "A German electronics company manufactures solar inverters and CCTV cameras. Which BIS scheme applies to each, is an Authorized Indian Representative mandatory, and what are the testing requirements?",
+      "expected_domain": "CRS / FMCS Dual Scheme",
+      "expected_keywords": ["CRS", "AIR", "Authorized Indian Representative", "IS 13252", "IS 16221"]
+    },
+    {
+      "id": 40,
+      "category": "certification_schemes",
+      "difficulty": "complex_mixed",
+      "query": "Explain the Quality Control Orders (QCO) regime under Section 16 of the BIS Act 2016 and the statutory criminal penalties for selling non-certified goods.",
+      "expected_domain": "QCO Statutory Regime",
+      "expected_keywords": ["Section 16", "Section 29", "imprisonment", "fine", "mandatory ISI"]
+    },
+    {
+      "id": 41,
+      "category": "certification_processes",
+      "difficulty": "short_1_2_words",
+      "query": "manakonline",
+      "expected_domain": "Manakonline Portal",
+      "expected_keywords": ["manakonline.in", "e-filing", "application"]
+    },
+    {
+      "id": 42,
+      "category": "certification_processes",
+      "difficulty": "short_1_2_words",
+      "query": "bis license",
+      "expected_domain": "Grant of License",
+      "expected_keywords": ["CM/L", "grant of license", "audit", "Manakonline"]
+    },
+    {
+      "id": 43,
+      "category": "certification_processes",
+      "difficulty": "medium",
+      "query": "What are the step-by-step procedures to apply for an ISI Mark license on the BIS Manakonline portal?",
+      "expected_domain": "Manakonline Steps",
+      "expected_keywords": ["Manakonline", "factory inspection", "sample testing", "CM/L"]
+    },
+    {
+      "id": 44,
+      "category": "certification_processes",
+      "difficulty": "medium",
+      "query": "What testing infrastructure and qualified personnel must a manufacturer maintain in-house under the Scheme of Inspection and Testing (SIT)?",
+      "expected_domain": "In-house Laboratory & SIT",
+      "expected_keywords": ["Scheme of Testing", "SIT", "chemist", "calibration", "lab"]
+    },
+    {
+      "id": 45,
+      "category": "certification_processes",
+      "difficulty": "medium",
+      "query": "What is the fee concession available for Micro and Small Enterprises (MSMEs) and Women Entrepreneurs applying for BIS certification?",
+      "expected_domain": "MSME Fee Concession",
+      "expected_keywords": ["Udyam", "50%", "concession", "MSME", "marking fee"]
+    },
+    {
+      "id": 46,
+      "category": "certification_processes",
+      "difficulty": "hard",
+      "query": "What happens during a BIS preliminary factory audit, how are counter-samples drawn, and what causes an application rejection?",
+      "expected_domain": "Factory Audit & Sampling",
+      "expected_keywords": ["factory audit", "independent lab", "counter-sample", "rejection"]
+    },
+    {
+      "id": 47,
+      "category": "certification_processes",
+      "difficulty": "hard",
+      "query": "Explain the renewal procedure for a BIS CM/L license, late fees, performance reports, and minimum marking fee calculation.",
+      "expected_domain": "License Renewal",
+      "expected_keywords": ["renewal", "marking fee", "performance report", "CM/L"]
+    },
+    {
+      "id": 48,
+      "category": "certification_processes",
+      "difficulty": "complex_mixed",
+      "query": "A startup wants to establish a cement manufacturing plant under IS 269 in Rajasthan. Give full roadmap: factory setup, required laboratory equipment, Manakonline application, fees, and audit timeline.",
+      "expected_domain": "Cement Certification Roadmap",
+      "expected_keywords": ["IS 269", "compressive strength", "autoclave", "Manakonline", "audit"]
+    },
+    {
+      "id": 49,
+      "category": "certification_processes",
+      "difficulty": "complex_mixed",
+      "query": "How is surveillance conducted by BIS after a license is granted, what is market sample drawing, and how are stop-marking orders issued?",
+      "expected_domain": "Surveillance & Enforcement",
+      "expected_keywords": ["surveillance", "market sample", "stop-marking", "cancellation"]
+    },
+    {
+      "id": 50,
+      "category": "certification_processes",
+      "difficulty": "complex_mixed",
+      "query": "Explain the Simplified Procedure for grant of license under Scheme-I versus the Normal Procedure.",
+      "expected_domain": "Simplified vs Normal Procedure",
+      "expected_keywords": ["Simplified Procedure", "Normal Procedure", "test report", "NABL"]
+    },
+    {
+      "id": 51,
+      "category": "consumer_rights_verification",
+      "difficulty": "short_1_2_words",
+      "query": "bis care",
+      "expected_domain": "BIS Care Mobile App",
+      "expected_keywords": ["BIS Care", "verify", "CM/L", "complaint"]
+    },
+    {
+      "id": 52,
+      "category": "consumer_rights_verification",
+      "difficulty": "short_1_2_words",
+      "query": "complaint",
+      "expected_domain": "Grievance Redressal",
+      "expected_keywords": ["1915", "complaint", "BIS Care", "NCH"]
+    },
+    {
+      "id": 53,
+      "category": "consumer_rights_verification",
+      "difficulty": "short_1_2_words",
+      "query": "fake isi",
+      "expected_domain": "Counterfeit ISI Mark",
+      "expected_keywords": ["CM/L", "fake", "counterfeit", "Section 29"]
+    },
+    {
+      "id": 54,
+      "category": "consumer_rights_verification",
+      "difficulty": "medium",
+      "query": "How can an Indian citizen verify whether an ISI mark on an electric kettle or water bottle is authentic using the BIS Care app?",
+      "expected_domain": "BIS Care Verification",
+      "expected_keywords": ["BIS Care", "CM/L", "Verify License Details"]
+    },
+    {
+      "id": 55,
+      "category": "consumer_rights_verification",
+      "difficulty": "medium",
+      "query": "Why is an ISI mark without an 7 or 8-digit CM/L number illegal, and what should a buyer do if they find one?",
+      "expected_domain": "Illegal ISI Mark",
+      "expected_keywords": ["CM/L", "illegal", "fake", "1915", "BIS Care"]
+    },
+    {
+      "id": 56,
+      "category": "consumer_rights_verification",
+      "difficulty": "hard",
+      "query": "What are consumer compensation rights under the Consumer Protection Act 2019 if a non-standard certified helmet or appliance causes injury?",
+      "expected_domain": "Product Liability CPA 2019",
+      "expected_keywords": ["product liability", "compensation", "harm", "injury", "1915"]
+    },
+    {
+      "id": 57,
+      "category": "consumer_rights_verification",
+      "difficulty": "hard",
+      "query": "What is the penalty for manufacturers and shopkeepers selling counterfeit ISI marked goods under Section 29 of the BIS Act 2016?",
+      "expected_domain": "Penalties BIS Act 2016",
+      "expected_keywords": ["Section 29", "2 years imprisonment", "2 Lakhs", "penalty"]
+    },
+    {
+      "id": 58,
+      "category": "consumer_rights_verification",
+      "difficulty": "complex_mixed",
+      "query": "A multiplex cinema hall is selling 1-litre bottled water with dual MRP printed on it and charging ₹60 while outside MRP is ₹20. Is this legal and where to report?",
+      "expected_domain": "Dual MRP & Legal Metrology",
+      "expected_keywords": ["dual MRP", "Legal Metrology", "1915", "e-Daakhil", "Rule 18"]
+    },
+    {
+      "id": 59,
+      "category": "consumer_rights_verification",
+      "difficulty": "complex_mixed",
+      "query": "Explain the 4-Point Safety Checklist that every Indian consumer should inspect before buying packaged food, electrical appliances, and gold.",
+      "expected_domain": "4-Point Safety Checklist",
+      "expected_keywords": ["ISI mark", "CM/L", "HUID", "FSSAI", "expiry"]
+    },
+    {
+      "id": 60,
+      "category": "consumer_rights_verification",
+      "difficulty": "complex_mixed",
+      "query": "How can consumers use the National Consumer Helpline (1915) and INGRAM portal in coordination with the BIS Enforcement Directorate?",
+      "expected_domain": "NCH 1915 & BIS Enforcement",
+      "expected_keywords": ["1915", "INGRAM", "enforcement", "market sample", "recall"]
+    },
+    {
+      "id": 61,
+      "category": "hallmarking_huid",
+      "difficulty": "short_1_2_words",
+      "query": "gold",
+      "expected_domain": "Gold Hallmarking",
+      "expected_keywords": ["hallmarking", "22K", "HUID", "IS 1417"]
+    },
+    {
+      "id": 62,
+      "category": "hallmarking_huid",
+      "difficulty": "short_1_2_words",
+      "query": "hallmark",
+      "expected_domain": "Hallmarking Purity",
+      "expected_keywords": ["hallmark", "HUID", "BIS Care", "gold"]
+    },
+    {
+      "id": 63,
+      "category": "hallmarking_huid",
+      "difficulty": "short_1_2_words",
+      "query": "huid",
+      "expected_domain": "6-Digit HUID",
+      "expected_keywords": ["HUID", "6-digit", "alphanumeric", "laser"]
+    },
+    {
+      "id": 64,
+      "category": "hallmarking_huid",
+      "difficulty": "medium",
+      "query": "What are the 3 mandatory marks that must appear on authentic hallmarked gold jewellery in India?",
+      "expected_domain": "3 Hallmarking Marks",
+      "expected_keywords": ["BIS logo", "purity karat", "6-digit HUID", "laser"]
+    },
+    {
+      "id": 65,
+      "category": "hallmarking_huid",
+      "difficulty": "medium",
+      "query": "What are the recognized purity grades for gold jewellery under IS 1417 (24K, 22K, 18K, 14K) and their fineness numbers?",
+      "expected_domain": "Gold Purity Grades",
+      "expected_keywords": ["916", "750", "585", "999", "22K", "18K", "IS 1417"]
+    },
+    {
+      "id": 66,
+      "category": "hallmarking_huid",
+      "difficulty": "hard",
+      "query": "How does an Assaying and Hallmarking Centre (AHC) test gold purity using XRF and fire assay methods under IS 1418?",
+      "expected_domain": "AHC Fire Assay",
+      "expected_keywords": ["fire assay", "XRF", "IS 1418", "cupellation", "AHC"]
+    },
+    {
+      "id": 67,
+      "category": "hallmarking_huid",
+      "difficulty": "hard",
+      "query": "What is the compensation formula if a consumer gets hallmarked gold jewellery tested at an AHC and finds it is lower karat than marked?",
+      "expected_domain": "Purity Shortage Compensation",
+      "expected_keywords": ["compensation", "two times", "testing charges", "shortage in purity"]
+    },
+    {
+      "id": 68,
+      "category": "hallmarking_huid",
+      "difficulty": "complex_mixed",
+      "query": "A consumer bought 22K gold bangle with HUID 'AB1234'. How can they verify it on the BIS Care App, what details will appear, and what if the jeweller refuses to provide an invoice?",
+      "expected_domain": "HUID App Verification & Rights",
+      "expected_keywords": ["BIS Care", "Verify HUID", "jeweller registration", "invoice", "1915"]
+    },
+    {
+      "id": 69,
+      "category": "hallmarking_huid",
+      "difficulty": "complex_mixed",
+      "query": "What are the mandatory hallmarking rules for silver jewellery and bullion under IS 2112, and how is silver fineness marked?",
+      "expected_domain": "Silver Hallmarking IS 2112",
+      "expected_keywords": ["IS 2112", "silver", "999", "925", "sterling silver"]
+    },
+    {
+      "id": 70,
+      "category": "hallmarking_huid",
+      "difficulty": "complex_mixed",
+      "query": "Can a consumer get their old unhallmarked gold jewellery tested and hallmarked, and what are the testing fees at an accredited AHC?",
+      "expected_domain": "Consumer Hallmarking Testing",
+      "expected_keywords": ["AHC", "₹45", "testing fee", "assaying", "unhallmarked"]
+    },
+    {
+      "id": 71,
+      "category": "testing_laboratories",
+      "difficulty": "short_1_2_words",
+      "query": "testing lab",
+      "expected_domain": "Testing Labs Directory",
+      "expected_keywords": ["laboratories", "NABL", "BIS", "Central Lab"]
+    },
+    {
+      "id": 72,
+      "category": "testing_laboratories",
+      "difficulty": "short_1_2_words",
+      "query": "testing lab hyderabad",
+      "expected_domain": "Hyderabad Laboratories",
+      "expected_keywords": ["Hyderabad", "Vimta", "Telangana", "water", "food"]
+    },
+    {
+      "id": 73,
+      "category": "testing_laboratories",
+      "difficulty": "short_1_2_words",
+      "query": "testing lab mumbai",
+      "expected_domain": "Mumbai Laboratories",
+      "expected_keywords": ["Mumbai", "WRL", "NTH", "Maharashtra"]
+    },
+    {
+      "id": 74,
+      "category": "testing_laboratories",
+      "difficulty": "short_1_2_words",
+      "query": "testing lab delhi",
+      "expected_domain": "Delhi NCR Laboratories",
+      "expected_keywords": ["Delhi", "Sahibabad", "Shriram Institute", "CL"]
+    },
+    {
+      "id": 75,
+      "category": "testing_laboratories",
+      "difficulty": "medium",
+      "query": "Suggest accredited BIS and NABL testing laboratories in and around Hyderabad, Telangana for water and food testing.",
+      "expected_domain": "Hyderabad Lab Finder",
+      "expected_keywords": ["Vimta", "Hyderabad", "Telangana", "IS 14543"]
+    },
+    {
+      "id": 76,
+      "category": "testing_laboratories",
+      "difficulty": "medium",
+      "query": "Where can manufacturers test two-wheeler helmets under IS 4151 and electric vehicle batteries under IS 16046?",
+      "expected_domain": "Automotive Testing Labs",
+      "expected_keywords": ["ARAI", "Pune", "CIPET", "IS 4151", "IS 16046"]
+    },
+    {
+      "id": 77,
+      "category": "testing_laboratories",
+      "difficulty": "hard",
+      "query": "What are the apex National Referral Food Laboratories notified by FSSAI for food safety dispute testing in India?",
+      "expected_domain": "FSSAI Referral Labs",
+      "expected_keywords": ["CFTRI", "NFL Ghaziabad", "NFL Kolkata", "referral"]
+    },
+    {
+      "id": 78,
+      "category": "testing_laboratories",
+      "difficulty": "hard",
+      "query": "How does an independent private testing laboratory obtain recognition under the BIS Laboratory Recognition Scheme (LRS 2020)?",
+      "expected_domain": "BIS LRS 2020 Scheme",
+      "expected_keywords": ["LRS 2020", "ISO/IEC 17025", "NABL", "audit", "Section 13"]
+    },
+    {
+      "id": 79,
+      "category": "testing_laboratories",
+      "difficulty": "complex_mixed",
+      "query": "A steel re-rolling mill in Durgapur needs NABL certified testing for TMT rebars under IS 1786. Suggest accredited labs in Eastern India (Kolkata / West Bengal).",
+      "expected_domain": "Eastern India Metallurgy Labs",
+      "expected_keywords": ["ERL", "Kolkata", "NTH Alipore", "IS 1786", "West Bengal"]
+    },
+    {
+      "id": 80,
+      "category": "testing_laboratories",
+      "difficulty": "complex_mixed",
+      "query": "How can a builder or consumer submit concrete cube or TMT steel samples for independent testing and obtain a court-admissible test report?",
+      "expected_domain": "Sample Testing Submission",
+      "expected_keywords": ["Manakonline", "LRS", "sampling", "NABL report", "evidence"]
+    },
+    {
+      "id": 81,
+      "category": "ungrammatical_typo_queries",
+      "difficulty": "short_1_2_words",
+      "query": "pakaged watr",
+      "expected_domain": "IS 14543",
+      "expected_keywords": ["IS 14543", "packaged drinking water", "limits"]
+    },
+    {
+      "id": 82,
+      "category": "ungrammatical_typo_queries",
+      "difficulty": "short_1_2_words",
+      "query": "holmark sona",
+      "expected_domain": "Gold Hallmarking",
+      "expected_keywords": ["hallmarking", "gold", "HUID", "purity"]
+    },
+    {
+      "id": 83,
+      "category": "ungrammatical_typo_queries",
+      "difficulty": "medium",
+      "query": "i wnt mke smal solar panl wht bis paper need",
+      "expected_domain": "Solar PV BIS Requirements",
+      "expected_keywords": ["IS 14286", "CRS", "Manakonline", "solar"]
+    },
+    {
+      "id": 84,
+      "category": "ungrammatical_typo_queries",
+      "difficulty": "medium",
+      "query": "how no if my gold ring is real gold or fke without bill",
+      "expected_domain": "Gold Verification",
+      "expected_keywords": ["HUID", "BIS Care", "laser", "22K", "purity"]
+    },
+    {
+      "id": 85,
+      "category": "ungrammatical_typo_queries",
+      "difficulty": "medium",
+      "query": "bottle water lead limit pliz tel table 2",
+      "expected_domain": "IS 14543 Lead Limit",
+      "expected_keywords": ["0.01", "Lead", "IS 14543", "Table 2"]
+    },
+    {
+      "id": 86,
+      "category": "ungrammatical_typo_queries",
+      "difficulty": "hard",
+      "query": "bought ceyling fan it make loud noise and burnt seller refuse refund how file cmplaint in bis",
+      "expected_domain": "Consumer Complaint Fan Safety",
+      "expected_keywords": ["1915", "BIS Care", "complaint", "refund", "ISI"]
+    },
+    {
+      "id": 87,
+      "category": "ungrammatical_typo_queries",
+      "difficulty": "hard",
+      "query": "i start small bakery busines making cake biscuit what bis and fssai license mandatory needed plz",
+      "expected_domain": "Bakery FSSAI & BIS Requirements",
+      "expected_keywords": ["FoSCoS", "Basic Registration", "FSSAI", "bakery"]
+    },
+    {
+      "id": 88,
+      "category": "ungrammatical_typo_queries",
+      "difficulty": "complex_mixed",
+      "query": "pakaged watr plant in hyderabad how much cost which lisence apply and whch lab test watr",
+      "expected_domain": "Water Plant Setup Hyderabad",
+      "expected_keywords": ["IS 14543", "FSSAI Central License", "Vimta", "Manakonline", "Hyderabad"]
+    },
+    {
+      "id": 89,
+      "category": "ungrammatical_typo_queries",
+      "difficulty": "complex_mixed",
+      "query": "steel sariya fe 500d building home builder saying local brand good as tata steel is it safe what check",
+      "expected_domain": "TMT Steel Safety Rebars",
+      "expected_keywords": ["IS 1786", "CM/L", "Fe 500D", "BIS Care", "earthquake"]
+    },
+    {
+      "id": 90,
+      "category": "ungrammatical_typo_queries",
+      "difficulty": "complex_mixed",
+      "query": "milk giving blue colour when put iodine is it mixed with chemical what to do report",
+      "expected_domain": "Milk Starch Adulteration",
+      "expected_keywords": ["starch", "iodine", "adulteration", "DART", "1915"]
+    },
+    {
+      "id": 91,
+      "category": "multilingual_queries",
+      "difficulty": "hindi_short",
+      "query": "सोना हॉलमार्क",
+      "expected_domain": "Gold Hallmarking Hindi",
+      "expected_keywords": ["हॉलमार्किंग", "HUID", "सोना", "शुद्धता"]
+    },
+    {
+      "id": 92,
+      "category": "multilingual_queries",
+      "difficulty": "hindi_medium",
+      "query": "पैकेज्ड ड्रिंकिंग वाटर के लिए कौन सा भारतीय मानक और FSSAI लाइसेंस अनिवार्य है?",
+      "expected_domain": "Packaged Water Hindi",
+      "expected_keywords": ["IS 14543", "FSSAI", "लाइसेंस", "ISI"]
+    },
+    {
+      "id": 93,
+      "category": "multilingual_queries",
+      "difficulty": "telugu_medium",
+      "query": "ప్యాకేజ్డ్ తాగునీటి తయారీకి ఏ BIS ప్రమాణం మరియు FSSAI లైసెన్స్ అవసరం?",
+      "expected_domain": "Packaged Water Telugu",
+      "expected_keywords": ["IS 14543", "FSSAI", "లైసెన్స్"]
+    },
+    {
+      "id": 94,
+      "category": "multilingual_queries",
+      "difficulty": "tamil_medium",
+      "query": "தங்க நகைகளில் 6 இலக்க HUID முத்திரையை BIS Care செயலியில் எவ்வாறு சரிபார்ப்பது?",
+      "expected_domain": "HUID Tamil",
+      "expected_keywords": ["HUID", "BIS Care", "தங்க"]
+    },
+    {
+      "id": 95,
+      "category": "multilingual_queries",
+      "difficulty": "marathi_medium",
+      "query": "Fe 500D TMT स्टील बारसाठी IS 1786 अंतर्गत ताकद आणि चाचणी काय असावी?",
+      "expected_domain": "TMT Steel Marathi",
+      "expected_keywords": ["IS 1786", "Fe 500D", "स्टील"]
+    },
+    {
+      "id": 96,
+      "category": "multilingual_queries",
+      "difficulty": "bengali_medium",
+      "query": "বিআইএস কেয়ার অ্যাপে কীভাবে আসল আইএসআই মার্ক যাচাই করবেন?",
+      "expected_domain": "BIS Care Bengali",
+      "expected_keywords": ["আইএসআই", "BIS Care", "লাইসেন্স"]
+    },
+    {
+      "id": 97,
+      "category": "multilingual_queries",
+      "difficulty": "kannada_medium",
+      "query": "ಪ್ಲಗ್ ಮತ್ತು ಸಾಕೆಟ್‌ಗಳಿಗೆ IS 1293 ಸುರಕ್ಷತಾ ನಿಯಮಗಳು ಯಾವುವು?",
+      "expected_domain": "Plugs Sockets Kannada",
+      "expected_keywords": ["IS 1293", "ಸಾಕೆಟ್"]
+    },
+    {
+      "id": 98,
+      "category": "multilingual_queries",
+      "difficulty": "gujarati_medium",
+      "query": "FSSAI FoSCoS પોર્ટલ પર ફૂડ લાયસન્સ માટે કેવી રીતે અરજી કરવી?",
+      "expected_domain": "FoSCoS Gujarati",
+      "expected_keywords": ["FSSAI", "FoSCoS", "લાયસન્સ"]
+    },
+    {
+      "id": 99,
+      "category": "multilingual_queries",
+      "difficulty": "malayalam_medium",
+      "query": "ഹെൽമെറ്റുകൾക്ക് IS 4151 മാനദണ്ഡങ്ങൾ എന്തൊക്കെയാണ്?",
+      "expected_domain": "Helmets Malayalam",
+      "expected_keywords": ["IS 4151", "ഹെൽമെറ്റ്"]
+    },
+    {
+      "id": 100,
+      "category": "multilingual_queries",
+      "difficulty": "complex_mixed_urdu",
+      "query": "پیک شدہ پینے کے پانی کے لیے لیڈ اور آرسینک کی حدود کیا ہیں اور فوڈ لائسنس کیسے حاصل کریں؟",
+      "expected_domain": "Packaged Water Urdu",
+      "expected_keywords": ["IS 14543", "FSSAI", "پانی"]
+    }
+  ]
+}

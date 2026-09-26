@@ -6,6 +6,7 @@ import { TelemetryDashboard } from './components/TelemetryDashboard';
 import { LicenseVerifyModal } from './components/LicenseVerifyModal';
 import { BisServicesModal } from './components/BisServicesModal';
 import { NutriScoreModal } from './components/NutriScoreModal';
+import { ReadyToApplyModal } from './components/ReadyToApplyModal';
 import { CitationModal } from './components/CitationModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -35,6 +36,8 @@ export const App: React.FC = () => {
   const [isTelemetryModalOpen, setIsTelemetryModalOpen] = useState(false);
   const [isBisServiceModalOpen, setIsBisServiceModalOpen] = useState(false);
   const [isNutriModalOpen, setIsNutriModalOpen] = useState(false);
+  const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
+  const [applyModalInitialQuery, setApplyModalInitialQuery] = useState('');
   const [bisServiceSection, setBisServiceSection] = useState<
     'standards_clubs' | 'nits_training' | 'lab_recognition' | 'consumer_protection' | 'departments'
   >('standards_clubs');
@@ -88,6 +91,11 @@ export const App: React.FC = () => {
     setIsNutriModalOpen(true);
   };
 
+  const handleOpenApplyModal = (query?: string) => {
+    setApplyModalInitialQuery(query || '');
+    setIsApplyModalOpen(true);
+  };
+
   const handleOpenBisService = (
     section: 'standards_clubs' | 'nits_training' | 'lab_recognition' | 'consumer_protection' | 'departments'
   ) => {
@@ -115,6 +123,7 @@ export const App: React.FC = () => {
         onOpenLicenseVerify={handleOpenLicenseVerify}
         onOpenComplianceAudit={handleOpenComplianceAudit}
         onOpenNutriScore={handleOpenNutriScore}
+        onOpenApplyModal={() => handleOpenApplyModal()}
         onOpenBisService={handleOpenBisService}
         onOpenTelemetry={handleOpenTelemetry}
       />
@@ -131,6 +140,7 @@ export const App: React.FC = () => {
             onOpenLicenseVerify={handleOpenLicenseVerify}
             onOpenComplianceAudit={handleOpenComplianceAudit}
             onOpenNutriScore={handleOpenNutriScore}
+            onOpenApplyModal={handleOpenApplyModal}
             selectedLanguage={selectedLanguage}
             onLanguageChange={setSelectedLanguage}
             messages={messages}
@@ -151,6 +161,14 @@ export const App: React.FC = () => {
         isOpen={isNutriModalOpen}
         onClose={() => setIsNutriModalOpen(false)}
         addToast={addToast}
+      />
+
+      {/* Ready to Apply Statutory Certificate & Dossier Modal */}
+      <ReadyToApplyModal
+        isOpen={isApplyModalOpen}
+        onClose={() => setIsApplyModalOpen(false)}
+        addToast={addToast}
+        initialQuery={applyModalInitialQuery}
       />
 
       {/* Official BIS Services Modal (Standards Clubs, NITS, LRS, Consumer Rights) */}
